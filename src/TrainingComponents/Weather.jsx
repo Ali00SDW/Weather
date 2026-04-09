@@ -312,10 +312,6 @@ export default function WeatherApp() {
           </Grid>
         ))}
       </Grid>
-
-      <Typography textAlign="center" sx={{ mt: 5, opacity: 0.5 }}>
-        Developed By Ehsan Azizi
-      </Typography>
     </Box>
   );
 }
