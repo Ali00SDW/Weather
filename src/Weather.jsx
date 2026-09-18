@@ -68,84 +68,95 @@ export default function Weather() {
 
   const moreInfo = [
     {
-      humidity: "65%",
-      wind: "15 km/h",
-      feelsLike: `18\u00b0`,
-      uv: "5 (medium)",
+      label: "humidity: ",
+      value: "65%",
+      icon: <WiHumidity size={28} />,
+    },
+    {
+      label: "Wind Speed: ",
+      value: "15 km/h",
+      icon: <WiWindy size={28} />,
+    },
+    {
+      label: "UV: ",
+      value: "5 (Medium)",
+      icon: <WiDaySunny size={28} />,
+    },
+    {
+      label: "Possible Rain: ",
+      value: "50%",
+      icon: <WiRain size={28} />,
     },
   ];
   return (
     <Container>
-      {/* search bar */}
+      {/* ============================= */}
+      {/* search bar Box */}
+      {/* ============================= */}
+
       <Box sx={{ my: 2, padding: 2, backgroundColor: "grey" }}>
         <Typography>ReactWeather</Typography>
         <TextField fullWidth label="search a city"></TextField>
       </Box>
+
+      {/* ============================= */}
       {/* current weather */}
+      {/* ============================= */}
+
       <Box
         sx={{
           my: 2,
-          padding: 2,
+          padding: 1,
           backgroundColor: "grey",
           display: "flex",
-          alignItems: "center",
           justifyContent: "space-evenly",
         }}
       >
-        {/* current */}
-        <Card>
-          <Grid
-            container
-            rowSpacing={1}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-            }}
+        {/* ======= current details */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+          }}
+        >
+          <Box
+            sx={{ display: "flex", alignItems: "baseline", fontSize: "50px" }}
           >
-            <Grid size={10}>
-              <Typography variant="h6" sx={{ textAlign: "center" }}>
-                Today
-              </Typography>
-            </Grid>
-
-            <Grid size={5}>
-              <WiDayCloudy size={120} />
-              <Typography sx={{ position: "relative", top: -25 }}>
-                partly cloudy
-              </Typography>
-              <Typography></Typography>
-            </Grid>
-
-            <Grid size={5}>
-              <Typography variant="h3">{`20\u00b0`}</Typography>
-            </Grid>
-          </Grid>
-        </Card>
-        {/* City */}
-        <Card sx={{ position: "relative", top: -70 }}>
-          <Typography variant="h5">city</Typography>
-        </Card>
-        {/* current details */}
-        <Card>
-          {moreInfo.map((moreInfo, index) => {
-            return (
-              <Grid
-                container
-                rowSpacing={3}
+            <Typography variant="h3">{`29\u00b0`}</Typography>
+            <Typography variant="h5">Partly Cloud</Typography>
+          </Box>
+          <Typography>{`Max: 32\u00b0 | Min: 21\u00b0`}</Typography>
+          <Typography>{`Feels Like: 30\u00b0`}</Typography>
+          <Box sx={{
+            display: "flex",
+            gap: 2
+          }}>
+            {moreInfo.map((moreInfo, index) => (
+              <Box
                 key={index}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  position: "relative",
+                  bottom: -10,
+                }}
               >
-                <Grid size={5}><WiHumidity/> Humidity: {moreInfo.humidity}</Grid>
-                <Grid size={5}><WiWindy/> Wind: {moreInfo.wind}</Grid>
-                <Grid size={5}><WiThermometer/> Feels Like: {moreInfo.feelsLike}</Grid>
-                <Grid size={5}><WiDaySunny/> UV: {moreInfo.uv}</Grid>
-              </Grid>
-            );
-          })}
-        </Card>
+                {moreInfo.icon}
+                {moreInfo.label}
+                {moreInfo.value}
+              </Box>
+            ))}
+          </Box>
+        </Box>
+        {/* ======= Weather Now Icon */}
+        <WiDayCloudy size={250} />
       </Box>
-      {/* long term */}
+
+      {/* ============================= */}
+      {/* long term Box */}
+      {/* ============================= */}
+
       <Box
         sx={{
           my: 2,
