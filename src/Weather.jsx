@@ -4,8 +4,9 @@ import {
   Typography,
   TextField,
   Card,
-  Grid,
+  IconButton,
 } from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
 import {
   WiDaySunny,
   WiCloud,
@@ -19,8 +20,25 @@ import {
   WiWindy,
   WiThermometer,
 } from "react-icons/wi";
+import { FaLocationArrow } from "react-icons/fa";
+import { IoSearchSharp } from "react-icons/io5";
 
+import { useState } from "react";
 export default function Weather() {
+  const [location, setLocation] = useState(false);
+
+  function handleLocationClick() {}
+  // الحصول على تاريخ اليوم الحالي
+  const today = new Date();
+
+  // تنسيق التاريخ باللغة العربية
+  const formattedDate = new Intl.DateTimeFormat("EG", {
+    weekday: "long", // اسم اليوم (الثلاثاء، السبت، إلخ)
+    day: "numeric", // رقم اليوم (26)
+    month: "long", // اسم الشهر (أكتوبر)
+    year: "numeric", // السنة (2024)
+  }).format(today);
+
   const days = [
     {
       day: "Friday",
@@ -94,9 +112,33 @@ export default function Weather() {
       {/* search bar Box */}
       {/* ============================= */}
 
-      <Box sx={{ my: 2, padding: 2, backgroundColor: "grey" }}>
-        <Typography>ReactWeather</Typography>
-        <TextField fullWidth label="search a city"></TextField>
+      <Box
+        sx={{
+          my: 2,
+          padding: 2,
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography variant="h4">Today Weather</Typography>
+          <Typography>{formattedDate}</Typography>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Typography variant="h4">Syria</Typography>
+
+          <IconButton sx={{ padding: 2, border: "1px solid" }}>
+            <FaLocationArrow size={20} onClick={handleLocationClick} />
+          </IconButton>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <TextField label="Choose a City" />
+          <IconButton sx={{border: "1px solid", borderRadius: "3px"}}>
+            <IoSearchSharp size={37} />
+          </IconButton>
+        </Box>
       </Box>
 
       {/* ============================= */}
@@ -107,7 +149,7 @@ export default function Weather() {
         sx={{
           my: 2,
           padding: 1,
-          backgroundColor: "grey",
+          backgroundColor: "",
           display: "flex",
           justifyContent: "space-evenly",
         }}
@@ -128,10 +170,12 @@ export default function Weather() {
           </Box>
           <Typography>{`Max: 32\u00b0 | Min: 21\u00b0`}</Typography>
           <Typography>{`Feels Like: 30\u00b0`}</Typography>
-          <Box sx={{
-            display: "flex",
-            gap: 2
-          }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+            }}
+          >
             {moreInfo.map((moreInfo, index) => (
               <Box
                 key={index}
@@ -161,7 +205,7 @@ export default function Weather() {
         sx={{
           my: 2,
           padding: 2,
-          backgroundColor: "grey",
+          backgroundColor: "",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
