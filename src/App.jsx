@@ -19,7 +19,7 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Weather />
+      <Weather/>
     </ThemeProvider>
   );
 }

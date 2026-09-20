@@ -16,4 +16,6 @@ body {
     radial-gradient(circle at 50% 50%, #2a2d34 0%, #121316 100%);
   background-attachment: fixed;
   color: #ffffff;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.789), rgba(0, 0, 0, 0.784)), url(Images/wallpaper.jpg);
+  background-size: cover;
 }

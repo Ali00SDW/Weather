@@ -25,11 +25,12 @@ import { FaLocationArrow } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
 
 export default function Weather() {
+  
   // =======================================================
   // اليوم والتاريخ
   // =======================================================
   const today = new Date();
-  const formattedDate = new Intl.DateTimeFormat("EG", {
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long", // اسم اليوم (الثلاثاء، السبت، إلخ)
     day: "numeric", // رقم اليوم (26)
     month: "long", // اسم الشهر (أكتوبر)
@@ -39,6 +40,7 @@ export default function Weather() {
   // ======================================================
   // مصفوفة الايام التالية
   // ======================================================
+
   const days = [
     {
       day: "Friday",
