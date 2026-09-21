@@ -13,11 +13,13 @@ const WeatherMap = ({ lat = 35.0, lon = 40.0, zoom = 6 }) => {
       sx={{
         p: 2,
         borderRadius: 2,
-        minHeight: "100vh",
-        background: "#646b7a"
+        background: "#464b56",
       }}
     >
-      <Typography variant="h4" sx={{ my: 2, textAlign: "center", color: "white" }}>
+      <Typography
+        variant="h4"
+        sx={{ my: 2, textAlign: "center", color: "white" }}
+      >
         Weather Map
       </Typography>
 

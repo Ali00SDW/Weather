@@ -142,14 +142,22 @@ export default function Weather() {
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography variant="h4">Today Weather</Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              textShadow: "1px 1px 20px #cde0ff",
+              mb: 2,
+            }}
+          >
+            Today Weather
+          </Typography>
           <Typography>{formattedDate}</Typography>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="h4">Syria</Typography>
-          <IconButton sx={{ padding: 2, border: "2px solid #464b56" }}>
-            <FaLocationArrow size={20} color="#464b56" />
+          <IconButton sx={{ padding: 2, border: "2px solid #798296" }}>
+            <FaLocationArrow size={20} color="#798296" />
           </IconButton>
         </Box>
 
@@ -162,14 +170,14 @@ export default function Weather() {
                 color: "white",
               },
               "& .MuiInputLabel-root": {
-                color: "#656c7b",
+                color: "#798296",
               },
               "& .MuiInputLabel-root.Mui-focused": {
                 color: "white",
               },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  border: "2px solid #464b56",
+                  border: "2px solid #798296",
                 },
                 "&:hover fieldset": {
                   borderColor: "#464b56",
@@ -184,7 +192,7 @@ export default function Weather() {
                 <InputAdornment>
                   <IconButton
                     sx={{
-                      color: "#464b56",
+                      color: "#798296",
                       transition: "0.2s",
                       "&:hover": {
                         color: "white",
