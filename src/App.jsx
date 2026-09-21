@@ -8,9 +8,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           fontFamily: "ui-serif",
-          color: "black",
-          textShadow: ` 0.5px 0.5px 20px white`,
-          fontWeight: "bold"
+          fontWeight: "bold",
         },
       },
     },

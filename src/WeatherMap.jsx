@@ -13,13 +13,11 @@ const WeatherMap = ({ lat = 35.0, lon = 40.0, zoom = 6 }) => {
       sx={{
         p: 2,
         borderRadius: 2,
-        overflow: "hidden",
-        width: "50vw",
-        height: "100vh",
-        backgroundColor: "transparent",
+        minHeight: "100vh",
+        background: "#646b7a"
       }}
     >
-      <Typography variant="h6" sx={{ my: 2, textAlign: "center" }}>
+      <Typography variant="h4" sx={{ my: 2, textAlign: "center", color: "white" }}>
         Weather Map
       </Typography>
 
@@ -28,7 +26,6 @@ const WeatherMap = ({ lat = 35.0, lon = 40.0, zoom = 6 }) => {
           height: "500px",
           width: "100%",
           borderRadius: 1,
-          overflow: "hidden",
         }}
       >
         <MapContainer
