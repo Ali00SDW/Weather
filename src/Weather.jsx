@@ -222,8 +222,8 @@ export default function Weather() {
       >
         <Box
           sx={{
-            width: "100vw",
-            height: "100vh",
+            width: "100%",
+            minHeight: "100vh",
             my: 2,
             padding: 2,
             display: "flex",
