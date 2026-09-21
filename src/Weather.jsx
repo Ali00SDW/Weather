@@ -160,7 +160,7 @@ export default function Weather() {
       <Container
         sx={{
           padding: 1,
-          backgroundColor: "rgba(255, 255, 255, 0.09)",
+          backgroundColor: "transparent",
           display: "flex",
           justifyContent: "space-between",
           borderRadius: 2,
@@ -231,7 +231,7 @@ export default function Weather() {
             alignItems: "center",
             justifyContent: "center",
             gap: 2,
-            background: "rgba(255, 255, 255, 0.16)",
+            background: "transparent",
             borderRadius: 2
           }}
         >
@@ -247,7 +247,7 @@ export default function Weather() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-around",
-                  background: "rgba(255, 255, 255, 0.16)",
+                  background: "transparent",
                 }}
               >
                 <Typography>{days.day}</Typography>
@@ -262,7 +262,7 @@ export default function Weather() {
             );
           })}
         </Box>
-        <Box sx={{ background: "rgba(255, 255, 255, 0.16)", borderRadius: 2 }}>
+        <Box sx={{ background: "transparent", borderRadius: 2 }}>
           <WeatherMap />
         </Box>
       </Box>
