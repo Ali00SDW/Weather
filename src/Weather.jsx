@@ -19,11 +19,10 @@ import {
   WiDayCloudy,
   WiHumidity,
   WiWindy,
-  WiThermometer,
 } from "react-icons/wi";
 import { FaLocationArrow } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Weather() {
   const [city, setCity] = useState("");
@@ -31,34 +30,63 @@ export default function Weather() {
   const [error, setError] = useState("");
   const [forecast, setForecast] = useState(null);
 
+  const fetchWeatherByLocation = async (latitude, longitude) => {
+    // الطقس الحالي
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+
+    const weatherResponse = await fetch(weatherUrl);
+    const weatherData = await weatherResponse.json();
+
+    if (!weatherResponse.ok) {
+      setError("Unable to get weather");
+      return;
+    }
+
+    setWeather(weatherData);
+
+    // توقعات الأيام والساعات
+    const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto`;
+
+    const forecastResponse = await fetch(forecastUrl);
+
+    if (!forecastResponse.ok) {
+      setError("Unable to get forecast");
+      return;
+    }
+
+    const forecastData = await forecastResponse.json();
+
+    setForecast(forecastData);
+  };
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        fetchWeatherByLocation(latitude, longitude);
+      },
+      (error) => {
+        console.log(error);
+        setError("Location permission is required");
+      },
+    );
+  }, []);
+
   // ======================================================
   // زر تحديد الموقع
   // ======================================================
 
   function handleLocation() {
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+      (position) => {
+        const { latitude, longitude } = position.coords;
 
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-
-        const response = await fetch(url);
-        const data = await response.json();
-
-        setWeather(data);
-
-        const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto`;
-        const forecastResponse = await fetch(forecastUrl);
-        const forecastData = await forecastResponse.json();
-        console.log(forecastData.hourly);
-        console.log(forecastData.hourly.time);
-
-        setForecast(forecastData);
-        console.log(forecastData);
+        fetchWeatherByLocation(latitude, longitude);
       },
       (error) => {
-        setWeather(error);
+        console.log(error);
+        setError("Location permission is required");
       },
     );
   }
@@ -86,8 +114,8 @@ export default function Weather() {
       return;
     }
 
-    console.log(data);
     setWeather(data);
+    fetchWeatherByLocation(data.coord.lat, data.coord.lon);
   };
   // ======================================================
   // اليوم والتاريخ
@@ -103,23 +131,6 @@ export default function Weather() {
   // ======================================================
   // دالة تُرجِع الأيقونة والنص مدمجين بناءً على state
   // ======================================================
-  const renderWeatherState = (state) => {
-    const icons = {
-      Foggy: <WiFog size={35} />,
-      Rainy: <WiRain size={35} />,
-      Sunny: <WiDaySunny size={35} />,
-      Cloudy: <WiCloudy size={35} />,
-      Stormy: <WiThunderstorm size={35} />,
-      Snowing: <WiSnow size={35} />,
-    };
-
-    return (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        {icons[state] || <WiCloud size={35} />}
-        <span>{state}</span>
-      </Box>
-    );
-  };
 
   const getWeatherState = (code) => {
     if (code === 0) {
@@ -216,27 +227,13 @@ export default function Weather() {
     .slice(0, 7);
 
   // ======================================================
-  // مصفوفة طقس اليوم بالساعات (Hourly Forecast)
-  // ======================================================
-  const hourlyForecast = [
-    { time: "12 PM", temp: `29\u00b0`, state: "Sunny" },
-    { time: "03 PM", temp: `31\u00b0`, state: "Cloudy" },
-    { time: "06 PM", temp: `27\u00b0`, state: "Rainy" },
-    { time: "09 PM", temp: `24\u00b0`, state: "Cloudy" },
-    { time: "12 AM", temp: `21\u00b0`, state: "Foggy" },
-    { time: "03 AM", temp: `19\u00b0`, state: "Foggy" },
-    { time: "06 AM", temp: `20\u00b0`, state: "Sunny" },
-  ];
-
-  // ======================================================
   // ايقونة طقس اليوم
   // ======================================================
 
   const getWeatherIcon = () => {
     if (!weather) {
-      return <WiDayCloudy size={300} />;
+      return null;
     }
-
     switch (weather.weather[0].main) {
       case "Clear":
         return <WiDaySunny size={300} />;
@@ -270,13 +267,13 @@ export default function Weather() {
   // ======================================================
   const moreInfo = [
     {
-      label: "humidity: ",
+      label: "Humidity: ",
       value: weather ? `${weather.main.humidity}%` : "--",
       icon: <WiHumidity size={28} />,
     },
     {
       label: "Wind Speed: ",
-      value: weather ? `${weather.wind.speed}km/h` : "--",
+      value: weather ? `${Math.round(weather.wind.speed * 3.6)} km/h` : "--",
       icon: <WiWindy size={28} />,
     },
   ];
@@ -409,9 +406,9 @@ export default function Weather() {
             {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
           </Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
-            {moreInfo.map((item, index) => (
+            {moreInfo.map((item) => (
               <Box
-                key={index}
+                key={item.label}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -426,7 +423,7 @@ export default function Weather() {
             ))}
           </Box>
         </Box>
-        {weather ? getWeatherIcon() : ""}
+        {getWeatherIcon()}
       </Box>
 
       {/* ============================= */}
@@ -458,7 +455,7 @@ export default function Weather() {
           <Divider />
           {dailyForecast.map((item, index) => (
             <Box
-              key={index}
+              key={item.date}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -468,13 +465,9 @@ export default function Weather() {
                 borderRadius: 1,
               }}
             >
-              <Typography>{formatForecastDay(item.date, index)}</Typography>
-
-              <Typography>{getWeatherState(item.weatherCode)}</Typography>
-
-              <Typography>Max: {Math.round(item.max)}°</Typography>
-
-              <Typography>Min: {Math.round(item.min)}°</Typography>
+              {formatForecastDay(item.date, index)}
+              {getWeatherState(item.weatherCode)}
+              Max: {Math.round(item.max)}° Min: {Math.round(item.min)}°
             </Box>
           ))}
         </Box>
@@ -504,9 +497,9 @@ export default function Weather() {
               justifyContent: "space-around",
             }}
           >
-            {displayedHourlyData.map((item, index) => (
+            {displayedHourlyData.map((item) => (
               <Box
-                key={index}
+                key={item.time}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -523,7 +516,7 @@ export default function Weather() {
                   })}
                 </Typography>
                 {getWeatherState(item.weatherCode)}
-                <Typography>{Math.round(item.temp)}°</Typography>
+                {Math.round(item.temp)}°
               </Box>
             ))}
           </Box>
