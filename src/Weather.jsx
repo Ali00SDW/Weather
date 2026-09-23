@@ -23,11 +23,75 @@ import {
 } from "react-icons/wi";
 import { FaLocationArrow } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
+import { useState } from "react";
 
 export default function Weather() {
-  // =======================================================
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+  const [error, setError] = useState("");
+  const [forecast, setForecast] = useState(null);
+
+  // ======================================================
+  // زر تحديد الموقع
+  // ======================================================
+
+  function handleLocation() {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        setWeather(data);
+
+        const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto`;
+        const forecastResponse = await fetch(forecastUrl);
+        const forecastData = await forecastResponse.json();
+        console.log(forecastData.hourly);
+        console.log(forecastData.hourly.time);
+
+        setForecast(forecastData);
+        console.log(forecastData);
+      },
+      (error) => {
+        setWeather(error);
+      },
+    );
+  }
+
+  // ======================================================
+  // زر البحث عن مدينة ومفتاح API
+  // ======================================================
+
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+
+  const handleSearch = async () => {
+    if (!city.trim()) {
+      return;
+    }
+    setError("");
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setWeather(null);
+      setError("City not found");
+      return;
+    }
+
+    console.log(data);
+    setWeather(data);
+  };
+  // ======================================================
   // اليوم والتاريخ
-  // =======================================================
+  // ======================================================
   const today = new Date();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -57,6 +121,100 @@ export default function Weather() {
     );
   };
 
+  const getWeatherState = (code) => {
+    if (code === 0) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <WiDaySunny size={35} />
+          <span>Sunny</span>
+        </Box>
+      );
+    }
+
+    if (code >= 1 && code <= 3) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <WiCloudy size={35} />
+          <span>Cloudy</span>
+        </Box>
+      );
+    }
+
+    if (code >= 45 && code <= 48) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <WiFog size={35} />
+          <span>Foggy</span>
+        </Box>
+      );
+    }
+
+    if (code >= 51 && code <= 67) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <WiRain size={35} />
+          <span>Rainy</span>
+        </Box>
+      );
+    }
+
+    if (code >= 71 && code <= 86) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <WiSnow size={35} />
+          <span>Snowing</span>
+        </Box>
+      );
+    }
+
+    if (code >= 95 && code <= 99) {
+      return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <WiThunderstorm size={35} />
+          <span>Stormy</span>
+        </Box>
+      );
+    }
+
+    return (
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <WiCloud size={35} />
+        <span>Cloudy</span>
+      </Box>
+    );
+  };
+  // =======================================================
+  // ايام طقس 7ايام
+  // =======================================================
+  const formatForecastDay = (date, index) => {
+    if (index === 0) {
+      return "Today";
+    }
+
+    return new Date(date).toLocaleDateString("en-US", {
+      weekday: "short",
+    });
+  };
+
+  // ======================================================
+  // طقس الساعات
+  // ======================================================
+
+  const hourlyData = forecast
+    ? forecast.hourly.time.map((time, index) => ({
+        time: time,
+        temp: forecast.hourly.temperature_2m[index],
+        weatherCode: forecast.hourly.weather_code[index],
+      }))
+    : [];
+
+  const now = new Date();
+
+  const displayedHourlyData = hourlyData
+    .filter((item) => new Date(item.time) >= now)
+    .filter((_, index) => index % 3 === 0)
+    .slice(0, 7);
+
   // ======================================================
   // مصفوفة طقس اليوم بالساعات (Hourly Forecast)
   // ======================================================
@@ -71,61 +229,56 @@ export default function Weather() {
   ];
 
   // ======================================================
+  // ايقونة طقس اليوم
+  // ======================================================
+
+  const getWeatherIcon = () => {
+    if (!weather) {
+      return <WiDayCloudy size={300} />;
+    }
+
+    switch (weather.weather[0].main) {
+      case "Clear":
+        return <WiDaySunny size={300} />;
+
+      case "Clouds":
+        return <WiDayCloudy size={300} />;
+
+      case "Rain":
+        return <WiRain size={300} />;
+
+      default:
+        return <WiDayCloudy size={300} />;
+    }
+  };
+
+  // ======================================================
   // مصفوفة الايام التالية
   // ======================================================
-  const days = [
-    {
-      day: "Friday",
-      state: "Foggy",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-    {
-      day: "Saturday",
-      state: "Rainy",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-    {
-      day: "Sunday",
-      state: "Sunny",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-    {
-      day: "Monday",
-      state: "Cloudy",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-    {
-      day: "Tuesday",
-      state: "Stormy",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-    {
-      day: "Wednesday",
-      state: "Snowing",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-    {
-      day: "Thursday",
-      state: "Cloudy",
-      maxDegree: `22\u00b0`,
-      minDegree: `10\u00b0`,
-    },
-  ];
+
+  const dailyForecast = forecast
+    ? forecast.daily.time.map((date, index) => ({
+        date: date,
+        max: forecast.daily.temperature_2m_max[index],
+        min: forecast.daily.temperature_2m_min[index],
+        weatherCode: forecast.daily.weather_code[index],
+      }))
+    : [];
 
   // ======================================================
   // مصفوفة معلومات طقس اليوم
   // ======================================================
   const moreInfo = [
-    { label: "humidity: ", value: "65%", icon: <WiHumidity size={28} /> },
-    { label: "Wind Speed: ", value: "15 km/h", icon: <WiWindy size={28} /> },
-    { label: "UV: ", value: "(5) Medium", icon: <WiDaySunny size={28} /> },
-    { label: "Possible Rain: ", value: "50%", icon: <WiRain size={28} /> },
+    {
+      label: "humidity: ",
+      value: weather ? `${weather.main.humidity}%` : "--",
+      icon: <WiHumidity size={28} />,
+    },
+    {
+      label: "Wind Speed: ",
+      value: weather ? `${weather.wind.speed}km/h` : "--",
+      icon: <WiWindy size={28} />,
+    },
   ];
 
   return (
@@ -155,9 +308,17 @@ export default function Weather() {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="h4">Syria</Typography>
+          <Typography variant="h4">
+            {weather ? `${weather.name} - ${weather.sys.country}` : ""}
+          </Typography>
+          {error && <Typography color="error">{error}</Typography>}
+
           <IconButton sx={{ padding: 2, border: "2px solid #b0c4de" }}>
-            <FaLocationArrow size={20} color="#b0c4de" />
+            <FaLocationArrow
+              size={20}
+              color="#b0c4de"
+              onClick={handleLocation}
+            />
           </IconButton>
         </Box>
 
@@ -165,6 +326,8 @@ export default function Weather() {
           <TextField
             label="Choose a City"
             variant="outlined"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
             sx={{
               "& .MuiInputBase-input": {
                 color: "white",
@@ -183,7 +346,7 @@ export default function Weather() {
                   borderColor: "#ffffff",
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "#b0c4de",
+                  borderColor: "#ffffff",
                 },
               },
             }}
@@ -199,7 +362,7 @@ export default function Weather() {
                       },
                     }}
                   >
-                    <IoSearchSharp />
+                    <IoSearchSharp onClick={handleSearch} />
                   </IconButton>
                 </InputAdornment>
               ),
@@ -230,11 +393,21 @@ export default function Weather() {
           <Box
             sx={{ display: "flex", alignItems: "baseline", fontSize: "50px" }}
           >
-            <Typography variant="h1">{`29\u00b0`}</Typography>
-            <Typography variant="h3">Partly Cloud</Typography>
+            <Typography variant="h1">
+              {weather ? `${Math.round(weather.main.temp)}°` : "--"}
+            </Typography>
+            <Typography variant="h3">
+              {weather ? weather.weather[0].description : "--"}
+            </Typography>
           </Box>
-          <Typography variant="h6">{`Max: 32\u00b0 | Min: 21\u00b0`}</Typography>
-          <Typography variant="h6">{`Feels Like: 30\u00b0`}</Typography>
+          <Typography variant="h6">
+            Max: {weather ? `${Math.round(weather.main.temp_max)}°` : "--"} |
+            Min: {weather ? `${Math.round(weather.main.temp_min)}°` : "--"}
+          </Typography>
+          <Typography variant="h6">
+            Feels Like:{" "}
+            {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
+          </Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
             {moreInfo.map((item, index) => (
               <Box
@@ -253,7 +426,7 @@ export default function Weather() {
             ))}
           </Box>
         </Box>
-        <WiDayCloudy size={300} />
+        {weather ? getWeatherIcon() : ""}
       </Box>
 
       {/* ============================= */}
@@ -283,7 +456,7 @@ export default function Weather() {
             7-Days weather forecast
           </Typography>
           <Divider />
-          {days.map((item, index) => (
+          {dailyForecast.map((item, index) => (
             <Box
               key={index}
               sx={{
@@ -295,11 +468,13 @@ export default function Weather() {
                 borderRadius: 1,
               }}
             >
-              <Typography sx={{ width: "80px" }}>{item.day}</Typography>
-              {renderWeatherState(item.state)}
-              <Typography>
-                {item.maxDegree} / {item.minDegree}
-              </Typography>
+              <Typography>{formatForecastDay(item.date, index)}</Typography>
+
+              <Typography>{getWeatherState(item.weatherCode)}</Typography>
+
+              <Typography>Max: {Math.round(item.max)}°</Typography>
+
+              <Typography>Min: {Math.round(item.min)}°</Typography>
             </Box>
           ))}
         </Box>
@@ -329,7 +504,7 @@ export default function Weather() {
               justifyContent: "space-around",
             }}
           >
-            {hourlyForecast.map((item, index) => (
+            {displayedHourlyData.map((item, index) => (
               <Box
                 key={index}
                 sx={{
@@ -341,9 +516,14 @@ export default function Weather() {
                   borderRadius: 1,
                 }}
               >
-                <Typography sx={{ width: "60px" }}>{item.time}</Typography>
-                {renderWeatherState(item.state)}
-                <Typography>{item.temp}</Typography>
+                <Typography sx={{ width: "60px" }}>
+                  {new Date(item.time).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    hour12: true,
+                  })}
+                </Typography>
+                {getWeatherState(item.weatherCode)}
+                <Typography>{Math.round(item.temp)}°</Typography>
               </Box>
             ))}
           </Box>
