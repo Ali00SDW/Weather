@@ -2,14 +2,11 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  color: #ffffff;
-
-  background: 
-    /* الشعاع الأول: الزاوية العلوية اليسرى */
-    radial-gradient(circle at 0% 0%, #444954 0%, transparent 55%),
-    
-    /* الشعاع الثاني: الزاوية السفلية اليمنى مع إغلاق الخلفية بدرجة داكنة */
-    radial-gradient(circle at 100% 100%, #3f434d 0%, #2a2d34 50%, #17181c 100%);
-
+  background: #1e293b;
   background-attachment: fixed;
 }
+
+/*
+background: 
+    radial-gradient(circle, #45b4f9 70%, #006aff 100%, transparent );
+*/

@@ -139,13 +139,13 @@ export default function Weather() {
           padding: 2,
           display: "flex",
           justifyContent: "space-between",
+          color: "#b0c4de",
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Typography
             variant="h3"
             sx={{
-              textShadow: "1px 1px 20px #cde0ff",
               mb: 2,
             }}
           >
@@ -156,8 +156,8 @@ export default function Weather() {
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="h4">Syria</Typography>
-          <IconButton sx={{ padding: 2, border: "2px solid #798296" }}>
-            <FaLocationArrow size={20} color="#798296" />
+          <IconButton sx={{ padding: 2, border: "2px solid #b0c4de" }}>
+            <FaLocationArrow size={20} color="#b0c4de" />
           </IconButton>
         </Box>
 
@@ -170,20 +170,20 @@ export default function Weather() {
                 color: "white",
               },
               "& .MuiInputLabel-root": {
-                color: "#798296",
+                color: "#b0c4de",
               },
               "& .MuiInputLabel-root.Mui-focused": {
                 color: "white",
               },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  border: "2px solid #798296",
+                  border: "2px solid #b0c4de",
                 },
                 "&:hover fieldset": {
-                  borderColor: "#464b56",
+                  borderColor: "#ffffff",
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "white",
+                  borderColor: "#b0c4de",
                 },
               },
             }}
@@ -192,7 +192,7 @@ export default function Weather() {
                 <InputAdornment>
                   <IconButton
                     sx={{
-                      color: "#798296",
+                      color: "#b0c4de",
                       transition: "0.2s",
                       "&:hover": {
                         color: "white",
@@ -214,7 +214,7 @@ export default function Weather() {
       <Box
         sx={{
           padding: 5,
-          background: "#464b56",
+          background: "#b0c4de",
           display: "flex",
           justifyContent: "space-between",
           borderRadius: 2,
@@ -275,7 +275,7 @@ export default function Weather() {
             display: "flex",
             flexDirection: "column",
             gap: 1.5,
-            background: "#464b56",
+            background: "#b0c4de",
             borderRadius: 2,
           }}
         >
@@ -290,7 +290,7 @@ export default function Weather() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-around",
-                background: "#666d7e",
+                boxShadow: "0px 0px 5px 0.1px #000000",
                 p: 1,
                 borderRadius: 1,
               }}
@@ -312,7 +312,7 @@ export default function Weather() {
             display: "flex",
             flexDirection: "column",
             gap: 1.5,
-            background: "#464b56",
+            background: "#b0c4de",
             borderRadius: 2,
           }}
         >
@@ -336,7 +336,7 @@ export default function Weather() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-around",
-                  background: "#666d7e",
+                  boxShadow: "0px 0px 5px 0.1px #000000",
                   p: 1,
                   borderRadius: 1,
                 }}
