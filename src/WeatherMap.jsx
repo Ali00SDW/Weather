@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Box, Typography, Paper } from "@mui/material";
 
-const API_KEY = import.meta.env.VITE_OPENWEATHER_MAP_API_KEY;
+const API_KEY ="291c167668a3e192d6b6ab5f6e61fb1e";
 
 const WeatherMap = ({ lat = 35.0, lon = 40.0, zoom = 6 }) => {
   return (
