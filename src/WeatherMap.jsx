@@ -1,10 +1,8 @@
-import React from "react";
 import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Box, Typography, Paper } from "@mui/material";
 
-// احصل على مفتاح API مجاني من موقع OpenWeatherMap
-const API_KEY = "291c167668a3e192d6b6ab5f6e61fb1e";
+const API_KEY = import.meta.env.VITE_OPENWEATHER_MAP_API_KEY;
 
 const WeatherMap = ({ lat = 35.0, lon = 40.0, zoom = 6 }) => {
   return (
@@ -25,7 +23,7 @@ const WeatherMap = ({ lat = 35.0, lon = 40.0, zoom = 6 }) => {
 
       <Box
         sx={{
-          height: "500px",
+          height: { xs: "350px", md: "500px" },
           width: "100%",
           boxShadow: "0px 0px 5px 0.1px #000000",
         }}

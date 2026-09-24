@@ -32,6 +32,7 @@ export default function Weather() {
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const fetchWeatherByLocation = async (latitude, longitude) => {
     // الطقس الحالي
@@ -148,13 +149,38 @@ export default function Weather() {
   // ======================================================
   // اليوم والتاريخ
   // ======================================================
-  const today = new Date();
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(today);
+  const formattedDate = forecast?.timezone
+    ? new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: forecast.timezone,
+      }).format(currentTime)
+    : "";
+  // ======================================================
+  // الوقت الحالي
+  // ======================================================
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const getCurrentTime = () => {
+    if (!forecast?.timezone) {
+      return currentTime;
+    }
+
+    return new Date(
+      currentTime.toLocaleString("en-US", {
+        timeZone: forecast.timezone,
+      }),
+    );
+  };
 
   // ======================================================
   // دالة تُرجِع الأيقونة والنص مدمجين بناءً على state
@@ -317,7 +343,10 @@ export default function Weather() {
           padding: 2,
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: { xs: "column", md: "row" },
           color: "#b0c4de",
+          gap: 2,
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -329,7 +358,37 @@ export default function Weather() {
           >
             Today Weather
           </Typography>
-          <Typography>{formattedDate}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: { xs: "12px", md: "18px" },
+                fontWeight: "bold",
+                mt: 0.5,
+              }}
+            >
+              {getCurrentTime().toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "12px", md: "18px" },
+                fontWeight: "bold",
+                mt: 0.5,
+              }}
+            >
+              {formattedDate}
+            </Typography>
+          </Box>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -410,7 +469,7 @@ export default function Weather() {
       {/* ============================= */}
       <Box
         sx={{
-          padding: 5,
+          padding: { xs: 2, md: 5 },
           background: "#b0c4de",
           display: "flex",
           justifyContent: "space-between",
@@ -435,22 +494,34 @@ export default function Weather() {
                   fontSize: "50px",
                 }}
               >
-                <Typography variant="h1">
+                <Typography
+                  variant="h1"
+                  sx={{ fontSize: { xs: "60px", md: "96px" } }}
+                >
                   {weather ? `${Math.round(weather.main.temp)}°` : "--"}
                 </Typography>
 
-                <Typography variant="h3">
+                <Typography
+                  variant="h3"
+                  sx={{ fontSize: { xs: "22px", md: "30px" } }}
+                >
                   {weather ? weather.weather[0].description : "--"}
                 </Typography>
               </Box>
 
-              <Typography variant="h6">
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "15px", md: "20px" } }}
+              >
                 Max: {weather ? `${Math.round(weather.main.temp_max)}°` : "--"}{" "}
                 | Min:{" "}
                 {weather ? `${Math.round(weather.main.temp_min)}°` : "--"}
               </Typography>
 
-              <Typography variant="h6">
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: "15px", md: "20px" } }}
+              >
                 Feels Like:{" "}
                 {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
               </Typography>
@@ -464,6 +535,7 @@ export default function Weather() {
                       alignItems: "center",
                       position: "relative",
                       bottom: -10,
+                      fontSize: { xs: "13px", md: "16px" },
                     }}
                   >
                     {item.icon}
@@ -475,7 +547,19 @@ export default function Weather() {
             </>
           )}
         </Box>
-        {getWeatherIcon()}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            "& svg": {
+              width: { xs: "180px", md: "300px" },
+              height: "auto",
+            },
+          }}
+        >
+          {getWeatherIcon()}
+        </Box>
       </Box>
 
       {/* ============================= */}
@@ -490,41 +574,6 @@ export default function Weather() {
           justifyContent: "space-between",
         }}
       >
-        {/* 7-Days weather forecast */}
-        <Box
-          sx={{
-            width: { xs: "100%", md: "50%" },
-            padding: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1.5,
-            background: "#b0c4de",
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" textAlign="center">
-            7-Days weather forecast
-          </Typography>
-          <Divider />
-          {dailyForecast.map((item, index) => (
-            <Box
-              key={item.date}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-around",
-                boxShadow: "0px 0px 5px 0.1px #000000",
-                p: 1,
-                borderRadius: 1,
-              }}
-            >
-              {formatForecastDay(item.date, index)}
-              {getWeatherState(item.weatherCode)}
-              Max: {Math.round(item.max)}° Min: {Math.round(item.min)}°
-            </Box>
-          ))}
-        </Box>
-
         {/* Hourly weather forecast */}
         <Box
           sx={{
@@ -560,6 +609,8 @@ export default function Weather() {
                   boxShadow: "0px 0px 5px 0.1px #000000",
                   p: 1,
                   borderRadius: 1,
+                  gap: { xs: 1, md: 2 },
+                  fontSize: { xs: "13px", md: "16px" },
                 }}
               >
                 <Typography sx={{ width: "60px" }}>
@@ -573,6 +624,43 @@ export default function Weather() {
               </Box>
             ))}
           </Box>
+        </Box>
+
+        {/* 7-Days weather forecast */}
+        <Box
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            padding: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.5,
+            background: "#b0c4de",
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" textAlign="center">
+            7-Days weather forecast
+          </Typography>
+          <Divider />
+          {dailyForecast.map((item, index) => (
+            <Box
+              key={item.date}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+                boxShadow: "0px 0px 5px 0.1px #000000",
+                p: 1,
+                borderRadius: 1,
+                gap: { xs: 1, md: 2 },
+                fontSize: { xs: "13px", md: "16px" },
+              }}
+            >
+              {formatForecastDay(item.date, index)}
+              {getWeatherState(item.weatherCode)}
+              Max: {Math.round(item.max)}° Min: {Math.round(item.min)}°
+            </Box>
+          ))}
         </Box>
       </Box>
 
