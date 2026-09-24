@@ -29,38 +29,59 @@ export default function Weather() {
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState("");
   const [forecast, setForecast] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const fetchWeatherByLocation = async (latitude, longitude) => {
     // الطقس الحالي
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+    try {
+      setInitialLoading(true);
+      console.log("Loading started");
+      setError("");
+      setForecast(null);
+      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
 
-    const weatherResponse = await fetch(weatherUrl);
-    const weatherData = await weatherResponse.json();
+      const weatherResponse = await fetch(weatherUrl);
+      const weatherData = await weatherResponse.json();
 
-    if (!weatherResponse.ok) {
-      setError("Unable to get weather");
-      return;
+      if (!weatherResponse.ok) {
+        setError("Unable to get weather");
+        return;
+      }
+
+      setWeather(weatherData);
+
+      // توقعات الأيام والساعات
+      const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto`;
+
+      const forecastResponse = await fetch(forecastUrl);
+
+      if (!forecastResponse.ok) {
+        setError("Unable to get forecast");
+        return;
+      }
+
+      const forecastData = await forecastResponse.json();
+
+      setForecast(forecastData);
+    } catch (error) {
+      console.log(error);
+      setError("Un able to connect to weather servicee");
+    } finally {
+      setInitialLoading(false);
     }
+  };
 
-    setWeather(weatherData);
-
-    // توقعات الأيام والساعات
-    const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto`;
-
-    const forecastResponse = await fetch(forecastUrl);
-
-    if (!forecastResponse.ok) {
-      setError("Unable to get forecast");
-      return;
-    }
-
-    const forecastData = await forecastResponse.json();
-
-    setForecast(forecastData);
+  // ======================================================
+  //  تحديد الموقع
+  // ======================================================
+  const getUserLocation = (onSuccess, onError) => {
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
   };
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
+    getUserLocation(
       (position) => {
         const { latitude, longitude } = position.coords;
 
@@ -73,20 +94,18 @@ export default function Weather() {
     );
   }, []);
 
-  // ======================================================
-  // زر تحديد الموقع
-  // ======================================================
-
   function handleLocation() {
-    navigator.geolocation.getCurrentPosition(
+    setLocationLoading(true);
+    getUserLocation(
       (position) => {
         const { latitude, longitude } = position.coords;
-
         fetchWeatherByLocation(latitude, longitude);
+        setLocationLoading(false);
       },
       (error) => {
         console.log(error);
         setError("Location permission is required");
+        setLocationLoading(false);
       },
     );
   }
@@ -101,21 +120,30 @@ export default function Weather() {
     if (!city.trim()) {
       return;
     }
-    setError("");
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+    const searchCity = city.trim();
+    try {
+      setLoading(true);
+      setError("");
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${API_KEY}&units=metric`;
 
-    const response = await fetch(url);
+      const response = await fetch(url);
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      setWeather(null);
-      setError("City not found");
-      return;
+      if (!response.ok) {
+        setWeather(null);
+        setError("City not found");
+        return;
+      }
+
+      fetchWeatherByLocation(data.coord.lat, data.coord.lon);
+    } catch (error) {
+      console.log(error);
+      setError("Unable to connect to weather service");
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
-
-    setWeather(data);
-    fetchWeatherByLocation(data.coord.lat, data.coord.lon);
   };
   // ======================================================
   // اليوم والتاريخ
@@ -309,13 +337,15 @@ export default function Weather() {
             {weather ? `${weather.name} - ${weather.sys.country}` : ""}
           </Typography>
           {error && <Typography color="error">{error}</Typography>}
+          {loading && <Typography>Loading...</Typography>}
+          {locationLoading && <Typography>Loading...</Typography>}
 
-          <IconButton sx={{ padding: 2, border: "2px solid #b0c4de" }}>
-            <FaLocationArrow
-              size={20}
-              color="#b0c4de"
-              onClick={handleLocation}
-            />
+          <IconButton
+            sx={{ padding: 2, border: "2px solid #b0c4de" }}
+            onClick={handleLocation}
+            disabled={locationLoading}
+          >
+            <FaLocationArrow size={20} color="#b0c4de" />
           </IconButton>
         </Box>
 
@@ -358,11 +388,18 @@ export default function Weather() {
                         color: "white",
                       },
                     }}
+                    onClick={handleSearch}
+                    disabled={loading}
                   >
-                    <IoSearchSharp onClick={handleSearch} />
+                    <IoSearchSharp />
                   </IconButton>
                 </InputAdornment>
               ),
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleSearch();
+              }
             }}
           />
         </Box>
@@ -387,41 +424,56 @@ export default function Weather() {
             justifyContent: "space-around",
           }}
         >
-          <Box
-            sx={{ display: "flex", alignItems: "baseline", fontSize: "50px" }}
-          >
-            <Typography variant="h1">
-              {weather ? `${Math.round(weather.main.temp)}°` : "--"}
-            </Typography>
-            <Typography variant="h3">
-              {weather ? weather.weather[0].description : "--"}
-            </Typography>
-          </Box>
-          <Typography variant="h6">
-            Max: {weather ? `${Math.round(weather.main.temp_max)}°` : "--"} |
-            Min: {weather ? `${Math.round(weather.main.temp_min)}°` : "--"}
-          </Typography>
-          <Typography variant="h6">
-            Feels Like:{" "}
-            {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            {moreInfo.map((item) => (
+          {initialLoading ? (
+            <Typography variant="h5">Loading weather...</Typography>
+          ) : (
+            <>
               <Box
-                key={item.label}
                 sx={{
                   display: "flex",
-                  alignItems: "center",
-                  position: "relative",
-                  bottom: -10,
+                  alignItems: "baseline",
+                  fontSize: "50px",
                 }}
               >
-                {item.icon}
-                {item.label}
-                {item.value}
+                <Typography variant="h1">
+                  {weather ? `${Math.round(weather.main.temp)}°` : "--"}
+                </Typography>
+
+                <Typography variant="h3">
+                  {weather ? weather.weather[0].description : "--"}
+                </Typography>
               </Box>
-            ))}
-          </Box>
+
+              <Typography variant="h6">
+                Max: {weather ? `${Math.round(weather.main.temp_max)}°` : "--"}{" "}
+                | Min:{" "}
+                {weather ? `${Math.round(weather.main.temp_min)}°` : "--"}
+              </Typography>
+
+              <Typography variant="h6">
+                Feels Like:{" "}
+                {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
+              </Typography>
+
+              <Box sx={{ display: "flex", gap: 2 }}>
+                {moreInfo.map((item) => (
+                  <Box
+                    key={item.label}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      position: "relative",
+                      bottom: -10,
+                    }}
+                  >
+                    {item.icon}
+                    {item.label}
+                    {item.value}
+                  </Box>
+                ))}
+              </Box>
+            </>
+          )}
         </Box>
         {getWeatherIcon()}
       </Box>
@@ -433,6 +485,7 @@ export default function Weather() {
         sx={{
           my: 3,
           display: "flex",
+          flexWrap: { xs: "wrap", md: "nowrap" },
           gap: 2,
           justifyContent: "space-between",
         }}
@@ -440,7 +493,7 @@ export default function Weather() {
         {/* 7-Days weather forecast */}
         <Box
           sx={{
-            width: "50%",
+            width: { xs: "100%", md: "50%" },
             padding: 2,
             display: "flex",
             flexDirection: "column",
@@ -475,7 +528,7 @@ export default function Weather() {
         {/* Hourly weather forecast */}
         <Box
           sx={{
-            width: "50%",
+            width: { xs: "100%", md: "50%" },
             padding: 2,
             display: "flex",
             flexDirection: "column",
