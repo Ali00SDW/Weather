@@ -189,7 +189,7 @@ export default function Weather() {
     if (code === 0) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiDaySunny size={35} />
+          <WiDaySunny size={48} />
           <span>Sunny</span>
         </Box>
       );
@@ -198,7 +198,7 @@ export default function Weather() {
     if (code === 1) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiCloudy size={35} />
+          <WiCloudy size={48} />
           <span>Cloudy</span>
         </Box>
       );
@@ -207,7 +207,7 @@ export default function Weather() {
     if (code === 2) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiDayCloudy size={35} />
+          <WiDayCloudy size={48} />
           <span>Partly Cloudy</span>
         </Box>
       );
@@ -216,7 +216,7 @@ export default function Weather() {
     if (code === 3) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiCloudy size={35} />
+          <WiCloudy size={48} />
           <span>Overcast</span>
         </Box>
       );
@@ -225,7 +225,7 @@ export default function Weather() {
     if (code >= 45 && code <= 48) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiFog size={35} />
+          <WiFog size={48} />
           <span>Foggy</span>
         </Box>
       );
@@ -234,7 +234,7 @@ export default function Weather() {
     if (code >= 51 && code <= 55) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiSprinkle size={35} />
+          <WiSprinkle size={48} />
           <span>Drizzle</span>
         </Box>
       );
@@ -243,7 +243,7 @@ export default function Weather() {
     if (code >= 56 && code <= 57) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiRain size={35} />
+          <WiRain size={48} />
           <span>Freezing Drizzle</span>
         </Box>
       );
@@ -252,7 +252,7 @@ export default function Weather() {
     if (code >= 61 && code <= 65) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiRain size={35} />
+          <WiRain size={48} />
           <span>Rainy</span>
         </Box>
       );
@@ -261,7 +261,7 @@ export default function Weather() {
     if (code >= 66 && code <= 67) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiRain size={35} />
+          <WiRain size={48} />
           <span>Freezing Rain</span>
         </Box>
       );
@@ -270,7 +270,7 @@ export default function Weather() {
     if (code >= 71 && code <= 75) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiSnow size={35} />
+          <WiSnow size={48} />
           <span>Snowing</span>
         </Box>
       );
@@ -279,7 +279,7 @@ export default function Weather() {
     if (code === 77) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiSnow size={35} />
+          <WiSnow size={48} />
           <span>Snow Grains</span>
         </Box>
       );
@@ -288,7 +288,7 @@ export default function Weather() {
     if (code >= 80 && code <= 82) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiRain size={35} />
+          <WiRain size={48} />
           <span>Rain Showers</span>
         </Box>
       );
@@ -297,7 +297,7 @@ export default function Weather() {
     if (code >= 85 && code <= 86) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiSnow size={35} />
+          <WiSnow size={48} />
           <span>Snow Showers</span>
         </Box>
       );
@@ -306,7 +306,7 @@ export default function Weather() {
     if (code >= 95 && code <= 99) {
       return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <WiThunderstorm size={35} />
+          <WiThunderstorm size={48} />
           <span>Stormy</span>
         </Box>
       );
@@ -314,7 +314,7 @@ export default function Weather() {
 
     return (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <WiDaySunny size={35} />
+        <WiDaySunny size={48} />
         <span>Sunny</span>
       </Box>
     );
@@ -481,7 +481,7 @@ export default function Weather() {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography sx={{fontSize: { xs: "30px", md: "45px" },}}>
+          <Typography sx={{ fontSize: { xs: "30px", md: "45px" } }}>
             {weather ? `${weather.name} - ${weather.sys.country}` : ""}
           </Typography>
           {error && <Typography color="error">{error}</Typography>}
@@ -761,24 +761,48 @@ export default function Weather() {
                 boxShadow: "0px 0px 5px 0.1px #000000",
                 p: 1.5,
                 borderRadius: 1,
-                gap: 1,
+                gap: 1.5,
                 minWidth: { xs: "120px", md: "140px" },
                 flex: 1,
                 fontSize: { xs: "13px", md: "16px" },
               }}
             >
-              <Typography fontWeight="bold">
+              <Typography
+                fontWeight="bold"
+                sx={{
+                  fontSize: { xs: "15px", md: "17px" },
+                }}
+              >
                 {formatForecastDay(item.date, index)}
               </Typography>
 
-              {getWeatherState(item.weatherCode)}
+              <Box
+                sx={{
+                  "& svg": {
+                    fontSize: { xs: "42px", md: "48px" },
+                  },
+                }}
+              >
+                {getWeatherState(item.weatherCode)}
+              </Box>
 
-              <Typography fontWeight="bold" sx={{ fontSize: "24px" }}>
+              <Typography
+                fontWeight="bold"
+                sx={{
+                  fontSize: { xs: "28px", md: "32px" },
+                }}
+              >
                 {Math.round(item.temp)}°
               </Typography>
 
-              <Typography>
-                Max: {Math.round(item.max)}° Min: {Math.round(item.min)}°
+              <Typography
+                sx={{
+                  fontSize: { xs: "13px", md: "15px" },
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Max: {Math.round(item.max)}° &nbsp; Min: {Math.round(item.min)}°
               </Typography>
             </Box>
           ))}
