@@ -50,7 +50,8 @@ export default function CurrentWeather({
       </Box>
       <Box
         sx={{
-          padding: { xs: 2, md: 5 },
+          padding: { xs: 2, md: 1 },
+          mx: {md: "25px"},
           display: "flex",
           justifyContent: "space-between",
         }}
@@ -112,6 +113,8 @@ export default function CurrentWeather({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            position: "relative",
+            left: {xs: "10px"},
             "& svg": {
               width: { xs: "150px", md: "300px" },
               height: "auto",

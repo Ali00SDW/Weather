@@ -361,7 +361,7 @@ export default function Weather() {
 
       "& > span": {
         fontSize: {
-          xs: "13px",
+          xs: "10px",
           sm: "15px",
           md: "18px",
         },
