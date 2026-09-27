@@ -1,12 +1,10 @@
 import WeatherMap from "./WeatherMap";
+import TopBar from "./WeatherTopBar";
+import CurrentWeather from "./WeatherCurrent";
+import HourlyAnd7Days from "./WeatherHourlyAnd7Days";
 import {
   Container,
   Box,
-  Typography,
-  TextField,
-  IconButton,
-  Divider,
-  InputAdornment,
 } from "@mui/material";
 import {
   WiDaySunny,
@@ -21,8 +19,6 @@ import {
   WiWindy,
   WiSprinkle,
 } from "react-icons/wi";
-import { FaLocationArrow } from "react-icons/fa";
-import { IoSearchSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 
 export default function Weather() {
@@ -599,497 +595,40 @@ export default function Weather() {
   return (
     <Container>
       {/* ============================= */}
-      {/* search bar Box */}
+      {/* search bar */}
       {/* ============================= */}
-      <Box
-        sx={{
-          my: 2,
-          padding: 1,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexDirection: { xs: "column", md: "row" },
-          color: "#b0c4de",
-          gap: 2,
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography
-            sx={{
-              mb: 2,
-              fontSize: { xs: "45px", md: "60px" },
-            }}
-          >
-            Today Weather
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: { xs: "12px", md: "18px" },
-                fontWeight: "bold",
-                mt: 0.5,
-              }}
-            >
-              {getCurrentTime().toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "12px", md: "18px" },
-                fontWeight: "bold",
-                mt: 0.5,
-              }}
-            >
-              {formattedDate}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography sx={{ fontSize: { xs: "30px", md: "45px" } }}>
-            {weather ? `${weather.name} - ${weather.sys.country}` : ""}
-          </Typography>
-          {error && <Typography color="error">{error}</Typography>}
-          {loading && <Typography>Loading...</Typography>}
-          {locationLoading && <Typography>Loading...</Typography>}
-
-          <IconButton
-            sx={{ padding: 2, border: "2px solid #b0c4de" }}
-            onClick={handleLocation}
-            disabled={locationLoading}
-          >
-            <FaLocationArrow size={20} color="#b0c4de" />
-          </IconButton>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-          <TextField
-            label="Choose a City"
-            variant="outlined"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            sx={{
-              "& .MuiInputBase-input": {
-                color: "white",
-              },
-              "& .MuiInputLabel-root": {
-                color: "#b0c4de",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "white",
-              },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  border: "2px solid #b0c4de",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#ffffff",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ffffff",
-                },
-              },
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment>
-                  <IconButton
-                    sx={{
-                      color: "#b0c4de",
-                      transition: "0.2s",
-                      "&:hover": {
-                        color: "white",
-                      },
-                    }}
-                    onClick={handleSearch}
-                    disabled={loading}
-                  >
-                    <IoSearchSharp />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                handleSearch();
-              }
-            }}
-          />
-        </Box>
-      </Box>
+      <TopBar
+        city={city}
+        setCity={setCity}
+        weather={weather}
+        error={error}
+        loading={loading}
+        locationLoading={locationLoading}
+        handleLocation={handleLocation}
+        handleSearch={handleSearch}
+        getCurrentTime={getCurrentTime}
+        formattedDate={formattedDate}
+      />
       {/* ============================= */}
       {/* current weather */}
       {/* ============================= */}
-      <Box
-        sx={{
-          padding: { xs: 2, md: 5 },
-          background: "#b0c4de",
-          display: "flex",
-          justifyContent: "space-between",
-          borderRadius: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-          }}
-        >
-          {initialLoading ? (
-            <Typography variant="h5">Loading weather...</Typography>
-          ) : (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  fontSize: "50px",
-                }}
-              >
-                <Typography
-                  variant="h1"
-                  sx={{ fontSize: { xs: "60px", md: "96px" } }}
-                >
-                  {weather ? `${Math.round(weather.main.temp)}°` : "--"}
-                </Typography>
-
-                <Typography
-                  variant="h3"
-                  sx={{ fontSize: { xs: "22px", md: "30px" } }}
-                >
-                  {weather ? weather.weather[0].description : "--"}
-                </Typography>
-              </Box>
-
-              <Typography
-                variant="h6"
-                sx={{ fontSize: { xs: "15px", md: "20px" } }}
-              >
-                Max: {weather ? `${Math.round(weather.main.temp_max)}°` : "--"}{" "}
-                | Min:{" "}
-                {weather ? `${Math.round(weather.main.temp_min)}°` : "--"}
-              </Typography>
-
-              <Typography
-                variant="h6"
-                sx={{ fontSize: { xs: "15px", md: "20px" } }}
-              >
-                Feels Like:{" "}
-                {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
-              </Typography>
-
-              <Box sx={{ display: "flex", gap: 2 }}>
-                {moreInfo.map((item) => (
-                  <Box
-                    key={item.label}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      position: "relative",
-                      bottom: -10,
-                      fontSize: { xs: "13px", md: "16px" },
-                    }}
-                  >
-                    {item.icon}
-                    {item.label}
-                    {item.value}
-                  </Box>
-                ))}
-              </Box>
-            </>
-          )}
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            "& svg": {
-              width: { xs: "150px", md: "300px" },
-              height: "auto",
-            },
-          }}
-        >
-          {getWeatherIcon()}
-        </Box>
-      </Box>
+      <CurrentWeather
+        weather={weather}
+        moreInfo={moreInfo}
+        getWeatherIcon={getWeatherIcon}
+        initialLoading={initialLoading}
+      />
       {/* ============================= */}
-      {/* Section: 7-Days & Hourly Forecast side-by-side */}
+      {/* 7-Days & Hourly Forecast */}
       {/* ============================= */}
-      <Box
-        sx={{
-          my: 3,
-          display: "flex",
-          flexDirection: "row",
-          gap: { xs: 0.5, sm: 1.25, md: 2 },
-          width: "100%",
-          alignItems: "stretch",
-        }}
-      >
-        {/* Hourly weather forecast */}
-        <Box
-          sx={{
-            width: { xs: "50%", md: "50%" },
-            minWidth: 0,
-            p: { xs: 0.5, md: 2 },
-            display: "flex",
-            flexDirection: "column",
-            gap: { xs: 0.5, md: 1.5 },
-            background: "#b0c4de",
-            borderRadius: 2,
-          }}
-        >
-          <Typography
-            variant="h5"
-            textAlign="center"
-            fontWeight="bold"
-            sx={{
-              mb: { xs: 0.5, md: 3 },
-              fontSize: { xs: "12px", sm: "17px", md: "24px" },
-              whiteSpace: "nowrap",
-            }}
-          >
-            Hourly Forecast Today
-          </Typography>
-
-          <Divider />
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "repeat(2, minmax(0, 1fr))",
-                sm: "repeat(2, minmax(0, 1fr))",
-                md: "repeat(2, minmax(0, 1fr))",
-              },
-              gap: { xs: 0.5, md: 2 },
-              pt: { xs: 0.25, md: 1 },
-            }}
-          >
-            {displayedHourlyData.map((item) => (
-              <Box
-                key={item.time}
-                sx={{
-                  minWidth: 0,
-                  minHeight: { xs: "112px", sm: "145px", md: "180px" },
-
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-
-                  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.18)",
-
-                  p: { xs: 0.5, md: 1.5 },
-                  borderRadius: 2,
-                  gap: { xs: 0.5, md: 1.5 },
-
-                  fontSize: { xs: "10px", md: "16px" },
-
-                  transition: "0.2s",
-
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.25)",
-                  },
-                }}
-              >
-                <Typography
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "9px", sm: "12px", md: "16px" },
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {new Date(item.time).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    hour12: true,
-                  })}
-                </Typography>
-
-                {/* Weather icon */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-
-                    "& svg": {
-                      width: { xs: "26px", sm: "34px", md: "48px" },
-                      height: { xs: "26px", sm: "34px", md: "48px" },
-                    },
-                  }}
-                >
-                  {getWeatherState(item.weatherCode)}
-                </Box>
-
-                <Typography
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "17px", sm: "21px", md: "30px" },
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {Math.round(item.temp)}°C
-                </Typography>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.2,
-                  }}
-                >
-                  <WiRain size={13} />
-
-                  <Typography
-                    sx={{
-                      fontSize: { xs: "7px", sm: "10px", md: "13px" },
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {item.rainProbability}%
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-
-        {/* 7-Days weather forecast */}
-        <Box
-          sx={{
-            width: { xs: "50%", md: "50%" },
-            minWidth: 0,
-            p: { xs: 0.5, md: 2 },
-            display: "flex",
-            flexDirection: "column",
-            gap: { xs: 0.5, md: 1.5 },
-            background: "#b0c4de",
-            borderRadius: 2,
-          }}
-        >
-          <Typography
-            variant="h5"
-            textAlign="center"
-            fontWeight="bold"
-            sx={{
-              mb: { xs: 0.5, md: 3 },
-              fontSize: { xs: "12px", sm: "17px", md: "24px" },
-              whiteSpace: "nowrap",
-            }}
-          >
-            7-Day Forecast
-          </Typography>
-
-          <Divider />
-
-          {/* Daily forecast cards */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "repeat(2, minmax(0, 1fr))",
-                sm: "repeat(2, minmax(0, 1fr))",
-                md: "repeat(2, minmax(0, 1fr))",
-              },
-              gap: { xs: 0.5, md: 2 },
-              pt: { xs: 0.25, md: 1 },
-            }}
-          >
-            {dailyForecast.map((item, index) => (
-              <Box
-                key={item.date}
-                sx={{
-                  minWidth: 0,
-                  minHeight: { xs: "112px", sm: "145px", md: "180px" },
-
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-
-                  gap: { xs: 0.5, md: 1.5 },
-                  p: { xs: 0.5, md: 1.5 },
-
-                  fontSize: { xs: "10px", md: "16px" },
-
-                  borderRadius: 2,
-
-                  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.18)",
-
-                  transition: "0.2s",
-
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.25)",
-                  },
-                }}
-              >
-                <Typography
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "9px", sm: "12px", md: "17px" },
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {formatForecastDay(item.date, index)}
-                </Typography>
-
-                {/* Weather icon */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-
-                    "& svg": {
-                      width: { xs: "26px", sm: "34px", md: "48px" },
-                      height: { xs: "26px", sm: "34px", md: "48px" },
-                    },
-                  }}
-                >
-                  {getWeatherState(item.weatherCode)}
-                </Box>
-
-                <Typography
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "17px", sm: "21px", md: "32px" },
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {Math.round(item.temp)}°C
-                </Typography>
-
-                <Typography
-                  sx={{
-                    fontSize: { xs: "6.5px", sm: "9px", md: "15px" },
-                    fontWeight: 500,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Max: {Math.round(item.max)}°C &nbsp; Min:{" "}
-                  {Math.round(item.min)}°C
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      </Box>
+      <HourlyAnd7Days 
+        displayedHourlyData={displayedHourlyData}
+        getWeatherState={getWeatherState}
+        dailyForecast={dailyForecast}
+        formatForecastDay={formatForecastDay}
+      />
       {/* ============================= */}
-      {/* Section: Weather Map (underneath) */}
+      {/* Weather Map */}
       {/* ============================= */}
       <Box sx={{ my: 3, width: "100%" }}>
         <WeatherMap />
