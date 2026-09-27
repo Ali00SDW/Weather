@@ -1,13 +1,12 @@
-import {
-  Box,
-  Typography,
-  Divider,
-} from "@mui/material";
-import {
-  WiRain,
-} from "react-icons/wi";
+import { Box, Typography, Divider } from "@mui/material";
+import { WiRain } from "react-icons/wi";
 
-export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, dailyForecast, formatForecastDay}) {
+export default function HourlyAnd7Days({
+  displayedHourlyData,
+  getWeatherState,
+  dailyForecast,
+  formatForecastDay,
+}) {
   return (
     <Box
       sx={{
@@ -51,9 +50,9 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs: "repeat(2, minmax(0, 1fr))",
-              sm: "repeat(2, minmax(0, 1fr))",
-              md: "repeat(2, minmax(0, 1fr))",
+              xs: "repeat(3, minmax(0, 1fr))",
+              sm: "repeat(3, minmax(0, 1fr))",
+              md: "repeat(3, minmax(0, 1fr))",
             },
             gap: { xs: 0.5, md: 2 },
             pt: { xs: 0.25, md: 1 },
@@ -64,7 +63,7 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
               key={item.time}
               sx={{
                 minWidth: 0,
-                minHeight: { xs: "112px", sm: "145px", md: "180px" },
+                minHeight: { xs: "90px", sm: "105px", md: "150px" },
 
                 display: "flex",
                 flexDirection: "column",
@@ -73,7 +72,7 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
 
                 boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.18)",
 
-                p: { xs: 0.5, md: 1.5 },
+                p: { xs: 0.3, md: 1 },
                 borderRadius: 2,
                 gap: { xs: 0.5, md: 1.5 },
 
@@ -90,7 +89,7 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
               <Typography
                 fontWeight="bold"
                 sx={{
-                  fontSize: { xs: "9px", sm: "12px", md: "16px" },
+                  fontSize: { xs: "8px", sm: "10px", md: "14px" },
                   whiteSpace: "nowrap",
                 }}
               >
@@ -108,8 +107,8 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
                   justifyContent: "center",
 
                   "& svg": {
-                    width: { xs: "26px", sm: "34px", md: "48px" },
-                    height: { xs: "26px", sm: "34px", md: "48px" },
+                    width: { xs: "22px", sm: "26px", md: "40px" },
+                    height: { xs: "18px", sm: "26px", md: "40px" },
                   },
                 }}
               >
@@ -119,7 +118,7 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
               <Typography
                 fontWeight="bold"
                 sx={{
-                  fontSize: { xs: "17px", sm: "21px", md: "30px" },
+                  fontSize: { xs: "12px", sm: "17px", md: "24px" },
                   lineHeight: 1.2,
                 }}
               >
@@ -177,7 +176,84 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
 
         <Divider />
 
-        {/* Daily forecast cards */}
+        {/* Tomorrow - Large Card */}
+        {dailyForecast[1] && (
+          <Box
+            sx={{
+              minWidth: 0,
+              minHeight: { xs: "155px", sm: "180px", md: "240px" },
+
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+
+              gap: { xs: 0.75, md: 1.5 },
+              p: { xs: 1, md: 2 },
+
+              borderRadius: 2,
+
+              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.18)",
+
+              transition: "0.2s",
+
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.25)",
+              },
+            }}
+          >
+            <Typography
+              fontWeight="bold"
+              sx={{
+                fontSize: { xs: "13px", sm: "16px", md: "22px" },
+              }}
+            >
+              Tomorrow
+            </Typography>
+
+            {/* Weather icon */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+
+                "& svg": {
+                  width: { xs: "40px", sm: "48px", md: "70px" },
+                  height: { xs: "40px", sm: "48px", md: "70px" },
+                },
+              }}
+            >
+              {getWeatherState(dailyForecast[1].weatherCode)}
+            </Box>
+
+            {/* Temperature */}
+            <Typography
+              fontWeight="bold"
+              sx={{
+                fontSize: { xs: "25px", sm: "30px", md: "40px" },
+                lineHeight: 1.2,
+              }}
+            >
+              {Math.round(dailyForecast[1].temp)}°C
+            </Typography>
+
+            {/* Max / Min */}
+            <Typography
+              sx={{
+                fontSize: { xs: "8px", sm: "11px", md: "15px" },
+                fontWeight: 500,
+                whiteSpace: "nowrap",
+              }}
+            >
+              Max: {Math.round(dailyForecast[1].max)}°C &nbsp; Min:{" "}
+              {Math.round(dailyForecast[1].min)}°C
+            </Typography>
+          </Box>
+        )}
+
+        {/* Remaining days */}
         <Box
           sx={{
             display: "grid",
@@ -190,7 +266,7 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
             pt: { xs: 0.25, md: 1 },
           }}
         >
-          {dailyForecast.map((item, index) => (
+          {dailyForecast.slice(2, 8).map((item, index) => (
             <Box
               key={item.date}
               sx={{
@@ -226,7 +302,7 @@ export default function HourlyAnd7Days({displayedHourlyData, getWeatherState, da
                   whiteSpace: "nowrap",
                 }}
               >
-                {formatForecastDay(item.date, index)}
+                {formatForecastDay(item.date, index + 2)}
               </Typography>
 
               {/* Weather icon */}

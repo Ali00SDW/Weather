@@ -2,10 +2,7 @@ import WeatherMap from "./WeatherMap";
 import TopBar from "./WeatherTopBar";
 import CurrentWeather from "./WeatherCurrent";
 import HourlyAnd7Days from "./WeatherHourlyAnd7Days";
-import {
-  Container,
-  Box,
-} from "@mui/material";
+import { Container, Box } from "@mui/material";
 import {
   WiDaySunny,
   WiCloud,
@@ -50,7 +47,7 @@ export default function Weather() {
       setWeather(weatherData);
 
       // توقعات الأيام والساعات
-      const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_mean,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&timezone=auto`;
+      const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_mean,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&timezone=auto&forecast_days=8`;
       const forecastResponse = await fetch(forecastUrl);
 
       if (!forecastResponse.ok) {
@@ -520,8 +517,7 @@ export default function Weather() {
 
   const displayedHourlyData = hourlyData
     .filter((item) => new Date(item.time) >= now)
-    .filter((_, index) => index % 3 === 0)
-    .slice(0, 7);
+    .slice(0, 24);
 
   // ======================================================
   // ايقونة طقس اليوم
@@ -621,7 +617,7 @@ export default function Weather() {
       {/* ============================= */}
       {/* 7-Days & Hourly Forecast */}
       {/* ============================= */}
-      <HourlyAnd7Days 
+      <HourlyAnd7Days
         displayedHourlyData={displayedHourlyData}
         getWeatherState={getWeatherState}
         dailyForecast={dailyForecast}
