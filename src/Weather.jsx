@@ -174,319 +174,338 @@ export default function Weather() {
     );
   };
 
-  // ======================================================
-  // دالة تُرجِع الأيقونة والنص مدمجين بناءً على state
-  // ======================================================
 
-  const getWeatherState = (code) => {
-    if (code === 0) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiDaySunny size={48} />
-          <span>Sunny</span>
-        </Box>
-      );
-    }
+  // =======================================================
+  // ايقونات ووصف حالة طقس 24 ساعة 
+  // =======================================================
 
-    if (code === 1) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiCloudy size={48} />
-          <span>Cloudy</span>
-        </Box>
-      );
-    }
+const getHourlyWeatherState = (code) => {
+  const style = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    minWidth: 0,
+    textAlign: "center",
+    lineHeight: 1.1,
 
-    if (code === 2) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiDayCloudy size={48} />
-          <span>Partly Cloudy</span>
-        </Box>
-      );
-    }
+    "& > svg": {
+      flexShrink: 0,
+    },
 
-    if (code === 3) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiCloudy size={48} />
-          <span>Overcast</span>
-        </Box>
-      );
-    }
+    "& > span": {
+      fontSize: {
+        xs: "8px",
+        sm: "12px",
+        md: "14px",
+      },
+      lineHeight: 1.1,
+      textAlign: "center",
+      minWidth: 0,
+      overflowWrap: "break-word",
+    },
+  };
 
-    if (code >= 45 && code <= 48) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiFog size={48} />
-          <span>Foggy</span>
-        </Box>
-      );
-    }
-
-    if (code >= 51 && code <= 55) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiSprinkle size={48} />
-          <span>Drizzle</span>
-        </Box>
-      );
-    }
-
-    if (code >= 56 && code <= 57) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiRain size={48} />
-          <span>Freezing Drizzle</span>
-        </Box>
-      );
-    }
-
-    if (code >= 61 && code <= 65) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiRain size={48} />
-          <span>Rainy</span>
-        </Box>
-      );
-    }
-
-    if (code >= 66 && code <= 67) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiRain size={48} />
-          <span>Freezing Rain</span>
-        </Box>
-      );
-    }
-
-    if (code >= 71 && code <= 75) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiSnow size={48} />
-          <span>Snowing</span>
-        </Box>
-      );
-    }
-
-    if (code === 77) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiSnow size={48} />
-          <span>Snow Grains</span>
-        </Box>
-      );
-    }
-
-    if (code >= 80 && code <= 82) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiRain size={48} />
-          <span>Rain Showers</span>
-        </Box>
-      );
-    }
-
-    if (code >= 85 && code <= 86) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiSnow size={48} />
-          <span>Snow Showers</span>
-        </Box>
-      );
-    }
-
-    if (code >= 95 && code <= 99) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.5,
-            width: "100%",
-            minWidth: 0,
-            textAlign: "center",
-            lineHeight: 1.1,
-            fontSize: { xs: "9px", md: "15px" },
-          }}
-        >
-          <WiThunderstorm size={48} />
-          <span>Stormy</span>
-        </Box>
-      );
-    }
-
+  if (code === 0) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          fontSize: { xs: "13px", md: "15px" },
-        }}
-      >
-        <WiDaySunny size={48} />
+      <Box sx={style}>
+        <WiDaySunny size={40} />
         <span>Sunny</span>
       </Box>
     );
+  }
+
+  if (code === 1) {
+    return (
+      <Box sx={style}>
+        <WiCloudy size={40} />
+        <span>Cloudy</span>
+      </Box>
+    );
+  }
+
+  if (code === 2) {
+    return (
+      <Box sx={style}>
+        <WiDayCloudy size={40} />
+        <span>Partly Cloudy</span>
+      </Box>
+    );
+  }
+
+  if (code === 3) {
+    return (
+      <Box sx={style}>
+        <WiCloudy size={40} />
+        <span>Overcast</span>
+      </Box>
+    );
+  }
+
+  if (code >= 45 && code <= 48) {
+    return (
+      <Box sx={style}>
+        <WiFog size={40} />
+        <span>Foggy</span>
+      </Box>
+    );
+  }
+
+  if (code >= 51 && code <= 55) {
+    return (
+      <Box sx={style}>
+        <WiSprinkle size={40} />
+        <span>Drizzle</span>
+      </Box>
+    );
+  }
+
+  if (code >= 56 && code <= 57) {
+    return (
+      <Box sx={style}>
+        <WiRain size={40} />
+        <span>Freezing Drizzle</span>
+      </Box>
+    );
+  }
+
+  if (code >= 61 && code <= 65) {
+    return (
+      <Box sx={style}>
+        <WiRain size={40} />
+        <span>Rainy</span>
+      </Box>
+    );
+  }
+
+  if (code >= 66 && code <= 67) {
+    return (
+      <Box sx={style}>
+        <WiRain size={40} />
+        <span>Freezing Rain</span>
+      </Box>
+    );
+  }
+
+  if (code >= 71 && code <= 75) {
+    return (
+      <Box sx={style}>
+        <WiSnow size={40} />
+        <span>Snowing</span>
+      </Box>
+    );
+  }
+
+  if (code === 77) {
+    return (
+      <Box sx={style}>
+        <WiSnow size={40} />
+        <span>Snow Grains</span>
+      </Box>
+    );
+  }
+
+  if (code >= 80 && code <= 82) {
+    return (
+      <Box sx={style}>
+        <WiRain size={40} />
+        <span>Rain Showers</span>
+      </Box>
+    );
+  }
+
+  if (code >= 85 && code <= 86) {
+    return (
+      <Box sx={style}>
+        <WiSnow size={40} />
+        <span>Snow Showers</span>
+      </Box>
+    );
+  }
+
+  if (code >= 95 && code <= 99) {
+    return (
+      <Box sx={style}>
+        <WiThunderstorm size={40} />
+        <span>Stormy</span>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={style}>
+      <WiCloudy size={40} />
+      <span>Cloudy</span>
+    </Box>
+  );
+};
+
+  // =======================================================
+  // ايقوانات ووصف حالة طقس ل8 ايام
+  // =======================================================
+
+  const getDailyWeatherState = (code) => {
+  const style = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 0.5,
+    width: "100%",
+    minWidth: 0,
+    textAlign: "center",
+    lineHeight: 1.1,
+
+    "& > svg": {
+      flexShrink: 0,
+    },
+
+    "& > span": {
+      fontSize: {
+        xs: "13px",
+        sm: "15px",
+        md: "18px",
+      },
+      lineHeight: 1.1,
+      textAlign: "center",
+      minWidth: 0,
+    },
   };
+
+  if (code === 0) {
+    return (
+      <Box sx={style}>
+        <WiDaySunny size={55} />
+        <span>Sunny</span>
+      </Box>
+    );
+  }
+
+  if (code === 1) {
+    return (
+      <Box sx={style}>
+        <WiCloudy size={55} />
+        <span>Cloudy</span>
+      </Box>
+    );
+  }
+
+  if (code === 2) {
+    return (
+      <Box sx={style}>
+        <WiDayCloudy size={55} />
+        <span>Partly Cloudy</span>
+      </Box>
+    );
+  }
+
+  if (code === 3) {
+    return (
+      <Box sx={style}>
+        <WiCloudy size={55} />
+        <span>Overcast</span>
+      </Box>
+    );
+  }
+
+  if (code >= 45 && code <= 48) {
+    return (
+      <Box sx={style}>
+        <WiFog size={55} />
+        <span>Foggy</span>
+      </Box>
+    );
+  }
+
+  if (code >= 51 && code <= 55) {
+    return (
+      <Box sx={style}>
+        <WiSprinkle size={55} />
+        <span>Drizzle</span>
+      </Box>
+    );
+  }
+
+  if (code >= 56 && code <= 57) {
+    return (
+      <Box sx={style}>
+        <WiRain size={55} />
+        <span>Freezing Drizzle</span>
+      </Box>
+    );
+  }
+
+  if (code >= 61 && code <= 65) {
+    return (
+      <Box sx={style}>
+        <WiRain size={55} />
+        <span>Rainy</span>
+      </Box>
+    );
+  }
+
+  if (code >= 66 && code <= 67) {
+    return (
+      <Box sx={style}>
+        <WiRain size={55} />
+        <span>Freezing Rain</span>
+      </Box>
+    );
+  }
+
+  if (code >= 71 && code <= 75) {
+    return (
+      <Box sx={style}>
+        <WiSnow size={55} />
+        <span>Snowing</span>
+      </Box>
+    );
+  }
+
+  if (code === 77) {
+    return (
+      <Box sx={style}>
+        <WiSnow size={55} />
+        <span>Snow Grains</span>
+      </Box>
+    );
+  }
+
+  if (code >= 80 && code <= 82) {
+    return (
+      <Box sx={style}>
+        <WiRain size={55} />
+        <span>Rain Showers</span>
+      </Box>
+    );
+  }
+
+  if (code >= 85 && code <= 86) {
+    return (
+      <Box sx={style}>
+        <WiSnow size={55} />
+        <span>Snow Showers</span>
+      </Box>
+    );
+  }
+
+  if (code >= 95 && code <= 99) {
+    return (
+      <Box sx={style}>
+        <WiThunderstorm size={55} />
+        <span>Stormy</span>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={style}>
+      <WiCloudy size={55} />
+      <span>Cloudy</span>
+    </Box>
+  );
+};
+
   // =======================================================
   // ايام طقس 7ايام
   // =======================================================
@@ -619,7 +638,8 @@ export default function Weather() {
       {/* ============================= */}
       <HourlyAnd7Days
         displayedHourlyData={displayedHourlyData}
-        getWeatherState={getWeatherState}
+        getHourlyWeatherState={getHourlyWeatherState}
+        getDailyWeatherState={getDailyWeatherState}
         dailyForecast={dailyForecast}
         formatForecastDay={formatForecastDay}
       />

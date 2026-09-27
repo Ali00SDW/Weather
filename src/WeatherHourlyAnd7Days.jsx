@@ -3,7 +3,8 @@ import { WiRain } from "react-icons/wi";
 
 export default function HourlyAnd7Days({
   displayedHourlyData,
-  getWeatherState,
+  getHourlyWeatherState,
+  getDailyWeatherState,
   dailyForecast,
   formatForecastDay,
 }) {
@@ -112,7 +113,7 @@ export default function HourlyAnd7Days({
                   },
                 }}
               >
-                {getWeatherState(item.weatherCode)}
+                {getHourlyWeatherState(item.weatherCode)}
               </Box>
 
               <Typography
@@ -225,7 +226,7 @@ export default function HourlyAnd7Days({
                 },
               }}
             >
-              {getWeatherState(dailyForecast[1].weatherCode)}
+              {getDailyWeatherState(dailyForecast[1].weatherCode)}
             </Box>
 
             {/* Temperature */}
@@ -318,7 +319,7 @@ export default function HourlyAnd7Days({
                   },
                 }}
               >
-                {getWeatherState(item.weatherCode)}
+                {getDailyWeatherState(item.weatherCode)}
               </Box>
 
               <Typography
