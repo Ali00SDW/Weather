@@ -17,8 +17,7 @@ export default function TopBar({
   locationLoading,
   handleLocation,
   handleSearch,
-  getCurrentTime,
-  formattedDate,
+
 }) {
   return (
     <Box
@@ -42,37 +41,7 @@ export default function TopBar({
         >
           Today Weather
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: { xs: "12px", md: "18px" },
-              fontWeight: "bold",
-              mt: 0.5,
-            }}
-          >
-            {getCurrentTime().toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            })}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: "12px", md: "18px" },
-              fontWeight: "bold",
-              mt: 0.5,
-            }}
-          >
-            {formattedDate}
-          </Typography>
-        </Box>
+
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
