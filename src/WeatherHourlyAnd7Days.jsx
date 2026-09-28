@@ -1,4 +1,4 @@
-import { Box, Typography, Divider } from "@mui/material";
+import { Box, Typography, Divider, Button } from "@mui/material";
 import { WiRain } from "react-icons/wi";
 
 export default function HourlyAnd7Days({
@@ -7,6 +7,8 @@ export default function HourlyAnd7Days({
   getDailyWeatherState,
   dailyForecast,
   formatForecastDay,
+  showAllHours,
+  setShowAllHours,
 }) {
   return (
     <Box
@@ -24,6 +26,7 @@ export default function HourlyAnd7Days({
         sx={{
           width: { xs: "50%", md: "50%" },
           minWidth: 0,
+          height: "fit-content",
           p: { xs: 0.5, md: 2 },
           display: "flex",
           flexDirection: "column",
@@ -59,7 +62,7 @@ export default function HourlyAnd7Days({
             pt: { xs: 0.25, md: 1 },
           }}
         >
-          {displayedHourlyData.map((item) => (
+          {displayedHourlyData.slice(0, showAllHours ? 24 : 15).map((item) => (
             <Box
               key={item.time}
               sx={{
@@ -147,6 +150,12 @@ export default function HourlyAnd7Days({
             </Box>
           ))}
         </Box>
+        <Button sx={{
+          color: "black",
+          backgroundColor: "rgba(0, 0, 0, 0.29)"
+        }} onClick={() => setShowAllHours(!showAllHours)}>
+          {showAllHours ? "Less" : "more"}
+        </Button>
       </Box>
 
       {/* 7-Days weather forecast */}
@@ -154,6 +163,7 @@ export default function HourlyAnd7Days({
         sx={{
           width: { xs: "50%", md: "50%" },
           minWidth: 0,
+          height: "fit-content",
           p: { xs: 0.5, md: 2 },
           display: "flex",
           flexDirection: "column",

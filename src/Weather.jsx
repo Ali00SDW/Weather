@@ -1,11 +1,8 @@
-import WeatherMap from "./WeatherMap";
-import TopBar from "./WeatherTopBar";
-import CurrentWeather from "./WeatherCurrent";
-import HourlyAnd7Days from "./WeatherHourlyAnd7Days";
+import { useState, useEffect } from "react";
+
 import { Container, Box } from "@mui/material";
 import {
   WiDaySunny,
-  WiCloud,
   WiRain,
   WiThunderstorm,
   WiSnow,
@@ -16,24 +13,40 @@ import {
   WiWindy,
   WiSprinkle,
 } from "react-icons/wi";
-import { useState, useEffect } from "react";
+
+import WeatherMap from "./WeatherMap";
+import TopBar from "./WeatherTopBar";
+import CurrentWeather from "./WeatherCurrent";
+import HourlyAnd7Days from "./WeatherHourlyAnd7Days";
 
 export default function Weather() {
+  // بيانات البحث والطقس
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
-  const [error, setError] = useState("");
   const [forecast, setForecast] = useState(null);
+  const [error, setError] = useState("");
+  // حالات التحميل
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  // الوقت والتحكم في عرض توقعات الطقس
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showAllHours, setShowAllHours] = useState(false);
+
+  // مفتاح OpenWeather API
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+
+  // ======================================================
+  // جلب بيانات الطقس حسب الموقع
+  // ======================================================
 
   const fetchWeatherByLocation = async (latitude, longitude) => {
-    // الطقس الحالي
+    // جلب الطقس الحالي والتوقعات حسب إحداثيات الموقع
     try {
       setInitialLoading(true);
       setError("");
       setForecast(null);
+      // إنشاء رابط طلب الطقس الحالي
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
 
       const weatherResponse = await fetch(weatherUrl);
@@ -46,7 +59,7 @@ export default function Weather() {
 
       setWeather(weatherData);
 
-      // توقعات الأيام والساعات
+      // إنشاء رابط توقعات الساعات والأيام من Open-Meteo
       const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_mean,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&timezone=auto&forecast_days=8`;
       const forecastResponse = await fetch(forecastUrl);
 
@@ -59,20 +72,25 @@ export default function Weather() {
 
       setForecast(forecastData);
     } catch (error) {
+      // التعامل مع أخطاء الاتصال أو الأخطاء غير المتوقعة
       console.log(error);
       setError("Un able to connect to weather servicee");
     } finally {
+      // إيقاف التحميل سواء نجح الطلب أو فشل
       setInitialLoading(false);
     }
   };
 
   // ======================================================
-  //  تحديد الموقع
+  //  تحديد موقع المستخدم
   // ======================================================
+
   const getUserLocation = (onSuccess, onError) => {
+    // طلب الموقع الحالي من المتصفح
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
   };
 
+  // تحديد الموقع تلقائيا عند فتح الصفحة
   useEffect(() => {
     getUserLocation(
       (position) => {
@@ -87,6 +105,7 @@ export default function Weather() {
     );
   }, []);
 
+  // إعادة تحديد موقع المستخدم عند الضغط على زر الموقع
   function handleLocation() {
     setLocationLoading(true);
     getUserLocation(
@@ -104,12 +123,11 @@ export default function Weather() {
   }
 
   // ======================================================
-  // زر البحث عن مدينة ومفتاح API
+  // البحث عن مدينة
   // ======================================================
 
-  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-
   const handleSearch = async () => {
+    // التأكد من أن المستخدم أدخل اسم المدينة
     if (!city.trim()) {
       return;
     }
@@ -119,16 +137,19 @@ export default function Weather() {
       setError("");
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${API_KEY}&units=metric`;
 
+      // إرسال طلب البحث عن المدينة إلى OpenWeather 
       const response = await fetch(url);
 
       const data = await response.json();
 
+      // التحقق من نجاح البحث
       if (!response.ok) {
         setWeather(null);
         setError("City not found");
         return;
       }
 
+      // استخدام إحداثيات المدينة لجلب الطقس والتوقعات
       fetchWeatherByLocation(data.coord.lat, data.coord.lon);
     } catch (error) {
       console.log(error);
@@ -138,9 +159,12 @@ export default function Weather() {
       setLoading(false);
     }
   };
+
   // ======================================================
-  // اليوم والتاريخ
+  // الوقت والتاريخ
   // ======================================================
+  
+  // تنسيق التاريخ حسب المنطقة الزمنية للمدينة
   const formattedDate = forecast?.timezone
     ? new Intl.DateTimeFormat("en-US", {
         weekday: "long",
@@ -150,10 +174,8 @@ export default function Weather() {
         timeZone: forecast.timezone,
       }).format(currentTime)
     : "";
-  // ======================================================
-  // الوقت الحالي
-  // ======================================================
 
+  // تحديث الوقت كل ثانية
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -162,6 +184,7 @@ export default function Weather() {
     return () => clearInterval(timer);
   }, []);
 
+  // الحصول على الوقت الحالي حسب المنطقة الزمنية للمدينة
   const getCurrentTime = () => {
     if (!forecast?.timezone) {
       return currentTime;
@@ -175,9 +198,10 @@ export default function Weather() {
   };
 
   // =======================================================
-  // ايقونات ووصف حالة طقس 24 ساعة
+  // حالة الطقس للتوقعات بالساعات
   // =======================================================
 
+  // تحديد حالة الطقس والايقونة حسب رمز Open-Meteo
   const getHourlyWeatherState = (code) => {
     const style = {
       display: "flex",
@@ -341,9 +365,10 @@ export default function Weather() {
   };
 
   // =======================================================
-  // ايقوانات ووصف حالة طقس ل8 ايام
+  // حالة الطقس للتوقعات اليومية
   // =======================================================
 
+  // تحديد حالة الطقس والايقونة حسب رمز Open-Meteo
   const getDailyWeatherState = (code) => {
     const style = {
       display: "flex",
@@ -506,8 +531,10 @@ export default function Weather() {
   };
 
   // =======================================================
-  // ايام طقس 7ايام
+  // تنسيق أيام التوقعات
   // =======================================================
+
+  // عرض "Today" لليوم الحالي واسم اليوم لبقية الايام
   const formatForecastDay = (date, index) => {
     if (index === 0) {
       return "Today";
@@ -518,10 +545,7 @@ export default function Weather() {
     });
   };
 
-  // ======================================================
-  // طقس الساعات
-  // ======================================================
-
+  // بيانات التوقعات بالساعات
   const hourlyData = forecast
     ? forecast.hourly.time.map((time, index) => ({
         time: time,
@@ -531,6 +555,7 @@ export default function Weather() {
       }))
     : [];
 
+  // عرض الساعات القادمة فقط بحد أقصى 24 ساعة
   const now = new Date();
 
   const displayedHourlyData = hourlyData
@@ -538,9 +563,10 @@ export default function Weather() {
     .slice(0, 24);
 
   // ======================================================
-  // ايقونة طقس اليوم
+  // أيقونة الطقس الحالي
   // ======================================================
 
+  // اختيار الأيقونة حسب حالة الطقس الحالي
   const getWeatherIcon = () => {
     if (!weather) return null;
 
@@ -571,9 +597,10 @@ export default function Weather() {
   };
 
   // ======================================================
-  // مصفوفة الايام التالية
+  // بيانات التوقعات اليومية
   // ======================================================
 
+  // إنشاء مصفوفة تحتوي على بيانات كل يوم
   const dailyForecast = forecast
     ? forecast.daily.time.map((date, index) => ({
         date: date,
@@ -584,15 +611,11 @@ export default function Weather() {
       }))
     : [];
 
-  useEffect(() => {
-    if (forecast) {
-      console.log("Daily weather codes:", forecast.daily.weather_code);
-    }
-  }, [forecast]);
+  // ======================================================
+  // معلومات إضافية عن الطقس
+  // ======================================================
 
-  // ======================================================
-  // مصفوفة معلومات طقس اليوم
-  // ======================================================
+  // عرض الرطوبة وسرعة الرياح
   const moreInfo = [
     {
       label: "Humidity: ",
@@ -609,7 +632,7 @@ export default function Weather() {
   return (
     <Container>
       {/* ============================= */}
-      {/* search bar */}
+      {/* شريط البحث */}
       {/* ============================= */}
       <TopBar
         city={city}
@@ -622,7 +645,7 @@ export default function Weather() {
         handleSearch={handleSearch}
       />
       {/* ============================= */}
-      {/* current weather */}
+      {/* الطقس الحالي */}
       {/* ============================= */}
       <CurrentWeather
         weather={weather}
@@ -633,7 +656,7 @@ export default function Weather() {
         formattedDate={formattedDate}
       />
       {/* ============================= */}
-      {/* 7-Days & Hourly Forecast */}
+      {/* التوقعات اليومية والساعات */}
       {/* ============================= */}
       <HourlyAnd7Days
         displayedHourlyData={displayedHourlyData}
@@ -641,9 +664,11 @@ export default function Weather() {
         getDailyWeatherState={getDailyWeatherState}
         dailyForecast={dailyForecast}
         formatForecastDay={formatForecastDay}
+        showAllHours={showAllHours}
+        setShowAllHours={setShowAllHours}
       />
       {/* ============================= */}
-      {/* Weather Map */}
+      {/* خريطة الطقس */}
       {/* ============================= */}
       <Box sx={{ my: 3, width: "100%" }}>
         <WeatherMap />
