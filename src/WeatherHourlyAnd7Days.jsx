@@ -45,7 +45,7 @@ export default function HourlyAnd7Days({
             whiteSpace: "nowrap",
           }}
         >
-          Hourly Forecast Today
+          Today Forecast hour by hour
         </Typography>
 
         <Divider />
@@ -150,10 +150,12 @@ export default function HourlyAnd7Days({
             </Box>
           ))}
         </Box>
-        <Button sx={{
-          color: "black",
-          backgroundColor: "rgba(0, 0, 0, 0.29)"
-        }} onClick={() => setShowAllHours(!showAllHours)}>
+        <Button
+          sx={{
+            color: "black",
+          }}
+          onClick={() => setShowAllHours(!showAllHours)}
+        >
           {showAllHours ? "Less" : "more"}
         </Button>
       </Box>
@@ -172,21 +174,6 @@ export default function HourlyAnd7Days({
           borderRadius: 2,
         }}
       >
-        <Typography
-          variant="h5"
-          textAlign="center"
-          fontWeight="bold"
-          sx={{
-            mb: { xs: 0.5, md: 3 },
-            fontSize: { xs: "12px", sm: "17px", md: "24px" },
-            whiteSpace: "nowrap",
-          }}
-        >
-          7-Day Forecast
-        </Typography>
-
-        <Divider />
-
         {/* Tomorrow - Large Card */}
         {dailyForecast[1] && (
           <Box
@@ -197,10 +184,8 @@ export default function HourlyAnd7Days({
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
 
               gap: { xs: 0.75, md: 1.5 },
-              p: { xs: 1, md: 2 },
 
               borderRadius: 2,
 
@@ -217,7 +202,19 @@ export default function HourlyAnd7Days({
             <Typography
               fontWeight="bold"
               sx={{
+                width: "100%",
+                textAlign: "center",
                 fontSize: { xs: "13px", sm: "16px", md: "22px" },
+
+                py: { xs: 0.75, md: 1 },
+
+                background: "rgba(255, 255, 255, 0.18)",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+
+                borderRadius: "8px 8px 0 0",
+
+                letterSpacing: "0.5px",
+                textShadow: "0px 1px 3px rgba(0, 0, 0, 0.15)",
               }}
             >
               Tomorrow
@@ -290,7 +287,6 @@ export default function HourlyAnd7Days({
                 justifyContent: "center",
 
                 gap: { xs: 0.5, md: 1.5 },
-                p: { xs: 0.5, md: 1.5 },
 
                 fontSize: { xs: "10px", md: "16px" },
 
@@ -309,8 +305,18 @@ export default function HourlyAnd7Days({
               <Typography
                 fontWeight="bold"
                 sx={{
+                  width: "100%",
                   fontSize: { xs: "9px", sm: "12px", md: "17px" },
-                  whiteSpace: "nowrap",
+                  textAlign: "center",
+                  py: { xs: 0.75, md: 1 },
+
+                  background: "rgba(255, 255, 255, 0.18)",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+
+                  borderRadius: "8px 8px 0 0",
+
+                  letterSpacing: "0.5px",
+                  textShadow: "0px 1px 3px rgba(0, 0, 0, 0.15)",
                 }}
               >
                 {formatForecastDay(item.date, index + 2)}
@@ -322,10 +328,10 @@ export default function HourlyAnd7Days({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-
+                  px: { xs: 2, md: 0 },
                   "& svg": {
-                    width: { xs: "26px", sm: "34px", md: "48px" },
-                    height: { xs: "26px", sm: "34px", md: "48px" },
+                    width: { xs: "22px", sm: "34px", md: "48px" },
+                    height: { xs: "22px", sm: "34px", md: "48px" },
                   },
                 }}
               >
@@ -335,7 +341,7 @@ export default function HourlyAnd7Days({
               <Typography
                 fontWeight="bold"
                 sx={{
-                  fontSize: { xs: "17px", sm: "21px", md: "32px" },
+                  fontSize: { xs: "12px", sm: "21px", md: "32px" },
                   lineHeight: 1.2,
                 }}
               >
@@ -344,9 +350,10 @@ export default function HourlyAnd7Days({
 
               <Typography
                 sx={{
-                  fontSize: { xs: "6.5px", sm: "9px", md: "15px" },
+                  fontSize: { xs: "6px", sm: "9px", md: "15px" },
                   fontWeight: 500,
                   whiteSpace: "nowrap",
+                  pb: { xs: 0, md: 1 },
                 }}
               >
                 Max: {Math.round(item.max)}°C &nbsp; Min: {Math.round(item.min)}

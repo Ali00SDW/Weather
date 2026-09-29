@@ -5,8 +5,6 @@ export default function CurrentWeather({
   getWeatherIcon,
   initialLoading,
   weather,
-  getCurrentTime,
-  formattedDate,
 }) {
   return (
     <Box
@@ -17,50 +15,51 @@ export default function CurrentWeather({
         borderRadius: 2,
       }}
     >
-      <Box
+      <Typography
+        variant="h5"
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          mt: "10px"
+          width: "100%",
+          boxSizing: "border-box",
+
+          fontSize: {
+            xs: "16px",
+            md: "24px",
+          },
+
+          fontWeight: "bold",
+          textAlign: "center",
+          letterSpacing: "1px",
+
+          py: { xs: 1, md: 1.5 },
+
+          background: "rgba(255, 255, 255, 0.18)",
+
+          borderRadius: "8px 8px 0 0",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+
+          textShadow: "0px 2px 4px rgba(0, 0, 0, 0.15)",
         }}
       >
-        <Typography
-          sx={{
-            fontSize: { xs: "8px", md: "18px" },
-            fontWeight: "bold",
-          }}
-        >
-          Date: {formattedDate}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: { xs: "8px", md: "18px" },
-            fontWeight: "bold",
-          }}
-        >
-          Time:{" "}
-          {getCurrentTime().toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          })}
-        </Typography>
-      </Box>
+        Current Weather
+      </Typography>
       <Box
         sx={{
           padding: { xs: 2, md: 1 },
-          mx: {md: "25px"},
+          mx: { md: "25px" },
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "center",
           justifyContent: "space-between",
+          gap: { xs: 1, md: 3 },
         }}
       >
         <Box
           sx={{
+            width: { xs: "100%", md: "auto" },
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-around",
+            justifyContent: "center",
+            gap: { xs: 1, md: 2 },
           }}
         >
           {initialLoading ? (
@@ -70,8 +69,9 @@ export default function CurrentWeather({
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "baseline",
-                  fontSize: "50px",
+                  flexDirection: "column",
+                  alignItems: { xs: "center", md: "flex-start" },
+                  gap: { xs: 0.5, md: 1 },
                 }}
               >
                 <Typography
@@ -83,7 +83,10 @@ export default function CurrentWeather({
 
                 <Typography
                   variant="h3"
-                  sx={{ fontSize: { xs: "20px", md: "30px" }, textAlign: "center" }}
+                  sx={{
+                    fontSize: { xs: "20px", md: "30px" },
+                    textAlign: "center",
+                  }}
                 >
                   {weather ? weather.weather[0].description : "--"}
                 </Typography>
@@ -91,7 +94,10 @@ export default function CurrentWeather({
 
               <Typography
                 variant="h6"
-                sx={{ fontSize: { xs: "10px", md: "20px" } }}
+                sx={{
+                  fontSize: { xs: "10px", md: "20px" },
+                  textAlign: { xs: "center", md: "left" },
+                }}
               >
                 Max: {weather ? `${Math.round(weather.main.temp_max)}°` : "--"}{" "}
                 | Min:{" "}
@@ -100,53 +106,59 @@ export default function CurrentWeather({
 
               <Typography
                 variant="h6"
-                sx={{ fontSize: { xs: "10px", md: "20px" } }}
+                sx={{
+                  fontSize: { xs: "10px", md: "20px" },
+                  textAlign: { xs: "center", md: "left" },
+                }}
               >
                 Feels Like:{" "}
                 {weather ? `${Math.round(weather.main.feels_like)}°` : "--"}
               </Typography>
             </>
           )}
+          <Box
+            sx={{
+              display: "flex",
+              gap: { xs: 1, md: 2 },
+              mt: { xs: 1, md: 2 },
+              justifyContent: { xs: "center", md: "flex-start" },
+            }}
+          >
+            {moreInfo.map((item) => (
+              <Box
+                key={item.label}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  px: { xs: 1, md: 1.5 },
+                  py: { xs: 0.5, md: 1 },
+                  borderRadius: 2,
+                  background: "rgba(255, 255, 255, 0.25)",
+                  fontSize: { xs: "10px", md: "16px" },
+                }}
+              >
+                {item.icon}
+                {item.label}
+                {item.value}
+              </Box>
+            ))}
+          </Box>
         </Box>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            position: "relative",
-            left: {xs: "10px"},
+            order: { xs: -1, md: 0 },
             "& svg": {
-              width: { xs: "150px", md: "300px" },
+              width: { xs: "130px", md: "250px" },
               height: "auto",
             },
           }}
         >
           {getWeatherIcon()}
         </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: {xs: "7px", md: "15px"},
-          position: "relative",
-          bottom: { xs: "5px", md: "25px" },
-          left: { xs: "5px", md: "25px" },
-        }}
-      >
-        {moreInfo.map((item) => (
-          <Box
-            key={item.label}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              fontSize: { xs: "13px", md: "16px" },
-            }}
-          >
-            {item.icon}
-            {item.label}
-            {item.value}
-          </Box>
-        ))}
       </Box>
     </Box>
   );

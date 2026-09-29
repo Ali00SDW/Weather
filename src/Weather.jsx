@@ -620,12 +620,12 @@ export default function Weather() {
     {
       label: "Humidity: ",
       value: weather ? `${weather.main.humidity}%` : "--",
-      icon: <WiHumidity size={28} />,
+      icon: <WiHumidity/>,
     },
     {
       label: "Wind Speed: ",
       value: weather ? `${Math.round(weather.wind.speed * 3.6)} km/h` : "--",
-      icon: <WiWindy size={28} />,
+      icon: <WiWindy/>,
     },
   ];
 
@@ -643,6 +643,8 @@ export default function Weather() {
         locationLoading={locationLoading}
         handleLocation={handleLocation}
         handleSearch={handleSearch}
+        getCurrentTime={getCurrentTime}
+        formattedDate={formattedDate}
       />
       {/* ============================= */}
       {/* الطقس الحالي */}

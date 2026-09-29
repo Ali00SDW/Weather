@@ -7,7 +7,6 @@ const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          fontFamily: "ui-serif",
           fontWeight: "bold",
         },
       },
