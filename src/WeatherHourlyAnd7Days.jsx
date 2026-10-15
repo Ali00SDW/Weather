@@ -7,8 +7,6 @@ export default function HourlyAnd7Days({
   getDailyWeatherState,
   dailyForecast,
   formatForecastDay,
-  showAllHours,
-  setShowAllHours,
 }) {
   return (
     <Box
@@ -26,7 +24,6 @@ export default function HourlyAnd7Days({
         sx={{
           width: { xs: "50%", md: "50%" },
           minWidth: 0,
-          height: "fit-content",
           p: { xs: 0.5, md: 2 },
           display: "flex",
           flexDirection: "column",
@@ -60,9 +57,27 @@ export default function HourlyAnd7Days({
             },
             gap: { xs: 0.5, md: 2 },
             pt: { xs: 0.25, md: 1 },
+            flexGrow: 1,
+            height: 0, 
+            overflowY: "auto",
+            pr: 1,
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+            "&::-webkit-scrollbar-track": {
+              background: "rgba(0,0,0,0.05)",
+              borderRadius: "10px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              background: "rgba(0,0,0,0.2)",
+              borderRadius: "10px",
+              "&:hover": {
+                background: "rgba(0,0,0,0.4)",
+              },
+            },
           }}
         >
-          {displayedHourlyData.slice(0, showAllHours ? 24 : 15).map((item) => (
+          {displayedHourlyData.map((item) => (
             <Box
               key={item.time}
               sx={{
@@ -150,14 +165,6 @@ export default function HourlyAnd7Days({
             </Box>
           ))}
         </Box>
-        <Button
-          sx={{
-            color: "black",
-          }}
-          onClick={() => setShowAllHours(!showAllHours)}
-        >
-          {showAllHours ? "Less" : "more"}
-        </Button>
       </Box>
 
       {/* 7-Days weather forecast */}

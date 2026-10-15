@@ -31,7 +31,6 @@ export default function Weather() {
   const [initialLoading, setInitialLoading] = useState(true);
   // الوقت والتحكم في عرض توقعات الطقس
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [showAllHours, setShowAllHours] = useState(false);
 
   // مفتاح OpenWeather API
   const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -666,8 +665,6 @@ export default function Weather() {
         getDailyWeatherState={getDailyWeatherState}
         dailyForecast={dailyForecast}
         formatForecastDay={formatForecastDay}
-        showAllHours={showAllHours}
-        setShowAllHours={setShowAllHours}
       />
       {/* ============================= */}
       {/* خريطة الطقس */}
